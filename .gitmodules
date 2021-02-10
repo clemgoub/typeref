@@ -1,0 +1,3 @@
+[submodule "insertion-genotype"]
+	path = bin/insertion-genotype
+	url = https://github.com/KiddLab/insertion-genotype.git

@@ -64,11 +64,12 @@ if ( params.ref == null ) exit 1, "missing reference genome (--ref *.fasta)"
 // ASSIGN INPUT CHANNELS WITH USER-DEFINED FILE PATH
 meltvcf_ch       =   Channel.fromPath(params.meltvcf)
 RMtrack_ch       =   Channel.fromPath(params.RM_track)
-//ref_ch      =   Channel.fromPath(params.ref)
+// split the ref genome into independent input channels for each process
 ref_TSD          =   Channel.fromPath(params.ref)
 ref_genoinput    =   Channel.fromPath(params.ref)
-// split the ref genome into independent input channels for each process
-//ref_ch.into { ref_TSD; ref_genoinput } 
+
+insgen_ch = Channel.fromPath( './bin/insertion-genotype/' )
+
 
 // ----------------------------------------
 // STEP 1
@@ -79,13 +80,12 @@ process inputFromMelt {
 	input:
 	file meltvcf from meltvcf_ch // takes the file from the path in the channel
     
-    output:
-    file "infile" into TypeDEL_in // will output in new channel TypeDEL_in
+  output:
+  file "infile" into TypeDEL_in // will output in new channel TypeDEL_in
 
-    script:
-    """
-   	input_from_melt_Del.sh $meltvcf > infile
-
+  script:
+  """
+  input_from_melt_Del.sh $meltvcf > infile
 	"""
 }
 
@@ -160,6 +160,29 @@ process inputGenotypes {
   """
   paste <(sort -k1,1 output_TSD_Intervals.out/TEcordinates_with_bothtsd_cordinates.v.3.4.txt) <(sort -k1,1 file.correspondingRepeatMaskerTEs.txt) | cut -f 1-4,11 > RM_insertions_TSD_strands
   deletion_create_input.sh RM_insertions_TSD_strands $ref > TypeREF.allele
+  """
+  
+  }
+
+// --------------------------------------
+// STEP 5 - (sub: INSERTION-GENOTYPE 1/2)
+// CREATE alleles and index with bwa
+// --------------------------------------
+
+process createAltAlleles {
+
+  input:
+  file "TypeREF.allele" from input_Geno_ch
+  file "insertion-genotype" from insgen_ch
+
+
+  output:
+  file genotyping into allelebase_ch
+
+  script:
+  """
+  mkdir genotyping
+  python2.7 insertion-genotype/create-alternative-alleles.py --allelefile TypeREF.allele --allelebase genotyping --bwa bwa
   """
   
   }

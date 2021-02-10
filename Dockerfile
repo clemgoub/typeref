@@ -24,7 +24,9 @@ RUN apt-get update && apt-get install --yes --no-install-recommends \
     parallel \
     tabix \
     vcftools \
-    bwa
+    samtools \
+    bwa \
+    python-pysam
 
 # install bedtools 2.29.1 (bedtools must be this version for compatibility)
 RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary \
