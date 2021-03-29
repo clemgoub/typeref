@@ -62,14 +62,14 @@ if ( params.ref == null ) exit 1, "missing reference genome (--ref *.fasta)"
 
 
 // ASSIGN INPUT CHANNELS WITH USER-DEFINED FILE PATH
-meltvcf_ch       =   Channel.fromPath(params.meltvcf)
-RMtrack_ch       =   Channel.fromPath(params.RM_track)
+meltvcf_ch        =   Channel.fromPath(params.meltvcf)
+RMtrack_ch        =   Channel.fromPath(params.RM_track)
 // split the ref genome into independent input channels for each process
-ref_TSD          =   Channel.fromPath(params.ref)
-ref_genoinput    =   Channel.fromPath(params.ref)
-
-insgen_ch = Channel.fromPath( './bin/insertion-genotype/' )
-
+ref_TSD           =   Channel.fromPath(params.ref)
+ref_genoinput     =   Channel.fromPath(params.ref)
+// load insertion-genotype submodules into dedicated channels
+insgen_prep_ch    =   Channel.fromPath( './bin/insertion-genotype/' )
+insegen_gen_ch    =   Channel.fromPath( './bin/insertion-genotype/' )
 
 // ----------------------------------------
 // STEP 1
@@ -153,7 +153,8 @@ process inputGenotypes {
 
   output:
   file "RM_insertions_TSD_strands" into interm_ch
-  file "TypeREF.allele" into input_Geno_ch // TSD channel to host the output file
+  file "TypeREF.allele" into input_Geno_ch_1
+  file "TypeREF.allele" into input_Geno_ch_2
   //file 'inputGenotypes.log' into log_ch
 
   script:
@@ -168,12 +169,11 @@ process inputGenotypes {
 // STEP 5 - (sub: INSERTION-GENOTYPE 1/2)
 // CREATE alleles and index with bwa
 // --------------------------------------
-
-process createAltAlleles {
+process insgen_createAlleles {
 
   input:
-  file "TypeREF.allele" from input_Geno_ch
-  file "insertion-genotype" from insgen_ch
+  file "TypeREF.allele" from input_Geno_ch_1
+  file "insertion-genotype" from insgen_prep_ch
 
 
   output:
@@ -183,6 +183,34 @@ process createAltAlleles {
   """
   mkdir genotyping
   python2.7 insertion-genotype/create-alternative-alleles.py --allelefile TypeREF.allele --allelebase genotyping --bwa bwa
+  """
+  
+  }
+
+  // --------------------------------------
+// STEP 6 - (sub: INSERTION-GENOTYPE 2/2)
+// GENOTYPE!!!!!!!
+// --------------------------------------
+// TO DO
+// 1 - add imputs: --aln_path (bam/cram file path) --aln_samples ([sample_name file_name.bam/.cram] table)
+// 2 - make vcf, aln_sample file for the 2 inds
+//   a. filter second cram to 22
+//   b. merge vcfs of 2 inds on 22
+//   c. 
+process insgen_genotype {
+
+  input:
+  file "TypeREF.allele" from input_Geno_ch_2
+  file "insertion-genotype" from insgen_gen_ch
+  file "genotyping" from allelebase_ch
+
+
+  output:
+  file Samples into samplegeno_ch
+
+  script:
+  """
+  cat $BAMFILE | $PARALLEL -j $CPU --colsep '\t' --results $OUTDIR/$PROJECT/genotyping_logs "python2.7 insertion-genotype/process-sample.py --allelefile $OUTDIR/$PROJECT/$PROJECT.allele --allelebase $OUTDIR/$PROJECT --samplename {1} --bwa $BWA --bam $BAMPATH/{2}"
   """
   
   }
