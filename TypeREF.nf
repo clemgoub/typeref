@@ -182,10 +182,7 @@ process insgen_createAlleles {
   script:
   """
   mkdir genotyping
-  python2.7 $workflow.projectDir/insertion-genotype/create-alternative-alleles.py --allelefile TypeREF.allele --allelebase 
-genotyping 
---bwa 
-bwa
+  python2.7 $workflow.projectDir/bin/insertion-genotype/create-alternative-alleles.py --allelefile TypeREF.allele --allelebase genotyping --bwa bwa
   """
   
   }
