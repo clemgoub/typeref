@@ -5,7 +5,7 @@ date = new Date().format( 'yyyyMMdd' )
 
 // USER INPUT PARAMETERS
 params.meltvcf 	= 	null
-params.RM_track = 	"Ressources/RepeatMasker_Alu_hg19.bed" // Default RM track is HG19 for ALU
+params.RM_track = 	null // Default RM track for hg19 and hg38 are available in the "Ressources" folder
 params.TE 		  = 	"Alu" // SHOULD DISAPEAR TO ALLOW ALL TE AT THE SAME TIME
 params.out		  = 	"TypeREF-${date}"
 params.help		  =	  null
@@ -182,7 +182,10 @@ process insgen_createAlleles {
   script:
   """
   mkdir genotyping
-  python2.7 insertion-genotype/create-alternative-alleles.py --allelefile TypeREF.allele --allelebase genotyping --bwa bwa
+  python2.7 $workflow.projectDir/insertion-genotype/create-alternative-alleles.py --allelefile TypeREF.allele --allelebase 
+genotyping 
+--bwa 
+bwa
   """
   
   }
@@ -197,20 +200,20 @@ process insgen_createAlleles {
 //   a. filter second cram to 22
 //   b. merge vcfs of 2 inds on 22
 //   c. 
-process insgen_genotype {
+// process insgen_genotype {
 
-  input:
-  file "TypeREF.allele" from input_Geno_ch_2
-  file "insertion-genotype" from insgen_gen_ch
-  file "genotyping" from allelebase_ch
+//  input:
+//  file "TypeREF.allele" from input_Geno_ch_2
+//  file "insertion-genotype" from insgen_gen_ch
+//  file "genotyping" from allelebase_ch
 
 
-  output:
-  file Samples into samplegeno_ch
+//  output:
+//  file Samples into samplegeno_ch
 
-  script:
-  """
-  cat $BAMFILE | $PARALLEL -j $CPU --colsep '\t' --results $OUTDIR/$PROJECT/genotyping_logs "python2.7 insertion-genotype/process-sample.py --allelefile $OUTDIR/$PROJECT/$PROJECT.allele --allelebase $OUTDIR/$PROJECT --samplename {1} --bwa $BWA --bam $BAMPATH/{2}"
-  """
+//  script:
+//  """
+//  cat $BAMFILE | $PARALLEL -j $CPU --colsep '\t' --results $OUTDIR/$PROJECT/genotyping_logs "python2.7 insertion-genotype/process-sample.py --allelefile $OUTDIR/$PROJECT/$PROJECT.allele --allelebase $OUTDIR/$PROJECT --samplename --bwa $BWA --bam $BAMPATH/{2}"
+//  """
   
-  }
+//  }
