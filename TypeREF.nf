@@ -225,6 +225,6 @@ process insgen_genotype {
 
   script:
   """
-  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $idSample --bwa bwa --bam $alnpath/${} --reference ${params.ref}
+  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $idSample --bwa bwa --bam $alnpath/$idFile --reference ${params.ref}
   """
   }
