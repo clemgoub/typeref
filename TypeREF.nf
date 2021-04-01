@@ -213,7 +213,7 @@ process insgen_genotype {
 
   input:
   file "TypeREF.allele" from input_Geno_ch_2
-  file "insertion-genotype" from insgen_gen_ch
+  //file "insertion-genotype" from insgen_gen_ch
   file "genotyping" from allelebase_ch
   file alnpath from alignPath_ch
   file alnsamples from alignSamples_ch
@@ -223,6 +223,6 @@ process insgen_genotype {
 
   script:
   """
-  cat $alnsamples | parallel -j ${params.cpu} --colsep '\t' "python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename {1} --bwa bwa --bam $alnpath/{2}"
+  cat $alnsamples | parallel -j ${params.cpu} --colsep '\t' "python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename {1} --bwa bwa --bam $alnpath/{2} --reference ${params.ref}"
   """
-}
+  }
