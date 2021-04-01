@@ -4,13 +4,15 @@
 date = new Date().format( 'yyyyMMdd' )
 
 // USER INPUT PARAMETERS
-params.meltvcf 	= 	null
-params.RM_track = 	null // Default RM track for hg19 and hg38 are available in the "Ressources" folder
-params.TE 		  = 	"Alu" // SHOULD DISAPEAR TO ALLOW ALL TE AT THE SAME TIME
-params.out		  = 	"TypeREF-${date}"
-params.help		  =	  null
-params.ref      =   null
-params.version  =   "0.0-dev"
+params.meltvcf 	    = 	null
+params.RM_track     = 	null // Default RM track for hg19 and hg38 are available in the "Ressources" folder
+params.TE 		      = 	"Alu" // SHOULD DISAPEAR TO ALLOW ALL TE AT THE SAME TIME
+params.out		      = 	"TypeREF-${date}"
+params.help		      =	  null
+params.ref          =   null
+params.aln_path     =   null
+params.aln_samples  =   null
+params.version      =   "0.0-dev"
 
 // SAY HELLO
 
@@ -40,15 +42,25 @@ if (params.help) {
   ------------------------------------------------
   
   Usage:
-  ./nextflow run  TypeREF.nf --meltvcf melt.del.vcf(.gz) --ref reference.genome.fasta [options]
+  ./nextflow run  TypeREF.nf \
+--meltvcf melt.del.vcf(.gz) \
+--ref reference.genome.fasta \
+--RM_track reference.TE.bed \
+--aln_path path.to.bam.cram.dir \
+--aln_samples samples.ID.filename.table [options]
   
   Input:
   --meltvcf       vcf (/vcf.gz) file preduced by MELT-DEL pipeline (Deletion-Merge command)
   --ref           reference genome used with MELT (.fasta)
-  
+  --RM_track      RepeatMasker track for reference MEI (.bed) note: RM track for hg19 and hg38 are available in the "Ressources" folder
+  --aln_path      path to bam/cram directory (all samples need to be in the same directory however, 
+                  the files to analyse will be only those in the aln_samples table)
+  --aln_samples   two columns (tab delimited) with samples ID in column 1 and associated samples file names (.bam/.cram) in column 2. 
+                  ex: NA12878  NA12878.project.blah.bam
+                      NA12831  NA12831.project.blah.bam
+
   Options:
   --TE            TE type to be genotyped: Alu | LINE1 | SVA (default: Alu)
-  --RM_track      RepeatMasker track for reference MEI (.bed) (default: Ressources/RepeatMasker_Alu_hg19.bed)
   --help          this message
   """
   exit 1
