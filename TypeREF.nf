@@ -43,12 +43,7 @@ if (params.help) {
   ------------------------------------------------
   
   Usage:
-  ./nextflow run  TypeREF.nf \
---meltvcf melt.del.vcf(.gz) \
---ref reference.genome.fasta \
---RM_track reference.TE.bed \
---aln_path path.to.bam.cram.dir \
---aln_samples samples.ID.filename.table [options]
+  ./nextflow run  TypeREF.nf --meltvcf melt.del.vcf(.gz) --ref reference.genome.fasta --RM_track reference.TE.bed --aln_path path.to.bam.cram.dir --aln_samples samples.ID.filename.table [options]
   
   Input:
   --meltvcf       vcf (/vcf.gz) file preduced by MELT-DEL pipeline (Deletion-Merge command)
@@ -79,7 +74,14 @@ if ( params.ref == null ) exit 1, "missing reference genome (--ref *.fasta)"
 meltvcf_ch        =   Channel.fromPath(params.meltvcf)
 RMtrack_ch        =   Channel.fromPath(params.RM_track)
 alignPath_ch      =   Channel.fromPath(params.aln_path)
-alignSamples_ch   =   Channel.fromPath(params.aln_samples)
+alignSamples_ch   =   Channel
+                            .fromPath(params.aln_samples)
+                            .splitCsv(sep: '\t')
+                            .map { row ->
+                              def idSample  = row[0]
+                              def idFile   = row[1]
+                              [idSample, idFile]
+                              } 
 // split the ref genome into independent input channels for each process
 ref_TSD           =   Channel.fromPath(params.ref)
 ref_genoinput     =   Channel.fromPath(params.ref)
@@ -216,13 +218,13 @@ process insgen_genotype {
   //file "insertion-genotype" from insgen_gen_ch
   file "genotyping" from allelebase_ch
   file alnpath from alignPath_ch
-  file alnsamples from alignSamples_ch
+  set idSample, idFile from alignSamples_ch
 
   output:
   file Samples into samplegeno_ch
 
   script:
   """
-  cat $alnsamples | parallel -j ${params.cpu} --colsep '\t' "python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename {1} --bwa bwa --bam $alnpath/{2} --reference ${params.ref}"
+  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $idSample --bwa bwa --bam $alnpath/${} --reference ${params.ref}
   """
   }
