@@ -12,6 +12,7 @@ params.help		      =	  null
 params.ref          =   null
 params.aln_path     =   null
 params.aln_samples  =   null
+params.cpu          =   1
 params.version      =   "0.0-dev"
 
 // SAY HELLO
@@ -60,6 +61,7 @@ if (params.help) {
                       NA12831  NA12831.project.blah.bam
 
   Options:
+  --cpu           max number of cpu to use during parralelized tasks (default: 1)
   --TE            TE type to be genotyped: Alu | LINE1 | SVA (default: Alu)
   --help          this message
   """
@@ -76,6 +78,8 @@ if ( params.ref == null ) exit 1, "missing reference genome (--ref *.fasta)"
 // ASSIGN INPUT CHANNELS WITH USER-DEFINED FILE PATH
 meltvcf_ch        =   Channel.fromPath(params.meltvcf)
 RMtrack_ch        =   Channel.fromPath(params.RM_track)
+alignPath_ch      =   Channel.fromPath(params.aln_path)
+alignSamples_ch   =   Channel.fromPath(params.aln_samples)
 // split the ref genome into independent input channels for each process
 ref_TSD           =   Channel.fromPath(params.ref)
 ref_genoinput     =   Channel.fromPath(params.ref)
@@ -199,30 +203,26 @@ process insgen_createAlleles {
   
   }
 
-  // --------------------------------------
-// STEP 6 - (sub: INSERTION-GENOTYPE 2/2)
-// GENOTYPE!!!!!!!
-// --------------------------------------
-// TO DO
-// 1 - add imputs: --aln_path (bam/cram file path) --aln_samples ([sample_name file_name.bam/.cram] table)
-// 2 - make vcf, aln_sample file for the 2 inds
-//   a. filter second cram to 22
-//   b. merge vcfs of 2 inds on 22
-//   c. 
-// process insgen_genotype {
+//--------------------------------------
+//STEP 6 - (sub: INSERTION-GENOTYPE 2/2)
+//GENOTYPE!!!!!!!
+//--------------------------------------
+// TO DO:
 
-//  input:
-//  file "TypeREF.allele" from input_Geno_ch_2
-//  file "insertion-genotype" from insgen_gen_ch
-//  file "genotyping" from allelebase_ch
+process insgen_genotype {
 
+  input:
+  file "TypeREF.allele" from input_Geno_ch_2
+  file "insertion-genotype" from insgen_gen_ch
+  file "genotyping" from allelebase_ch
+  file alnpath from alignPath_ch
+  file alnsamples from alignSamples_ch
 
-//  output:
-//  file Samples into samplegeno_ch
+  output:
+  file Samples into samplegeno_ch
 
-//  script:
-//  """
-//  cat $BAMFILE | $PARALLEL -j $CPU --colsep '\t' --results $OUTDIR/$PROJECT/genotyping_logs "python2.7 insertion-genotype/process-sample.py --allelefile $OUTDIR/$PROJECT/$PROJECT.allele --allelebase $OUTDIR/$PROJECT --samplename --bwa $BWA --bam $BAMPATH/{2}"
-//  """
-  
-//  }
+  script:
+  """
+  cat $alnsamples | parallel -j ${params.cpu} --colsep '\t' "python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename {1} --bwa bwa --bam $alnpath/{2}"
+  """
+}
