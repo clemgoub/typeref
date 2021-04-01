@@ -221,7 +221,7 @@ process insgen_genotype {
   set idSample, idFile from alignSamples_ch
 
   output:
-  file Samples into samplegeno_ch
+  file samples into samplegeno_ch
 
   script:
   """
