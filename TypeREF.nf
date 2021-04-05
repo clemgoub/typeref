@@ -218,7 +218,7 @@ process insgen_genotype {
   //file "insertion-genotype" from insgen_gen_ch
   file "genotyping" from allelebase_ch
   file alnpath from alignPath_ch
-  set idSample, idFile from alignSamples_ch
+  set val(idSample), file(idFile) from alignSamples_ch
 
   output:
   file genotyping into samplegeno_ch
