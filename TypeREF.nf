@@ -77,11 +77,17 @@ alignPath_ch      =   Channel.fromPath(params.aln_path)
 alignSamples_ch   =   Channel
                             .fromPath(params.aln_samples)
                             .splitCsv(sep: '\t')
-                            .map { row ->
-                              def idSample  = row[0]
-                              def idFile   = row[1]
-                              [idSample, idFile]
+                            .map { row -> [val(idSample), file(idFile)]
                               } 
+
+                            //   alignSamples_ch   =   Channel
+                            // .fromPath(params.aln_samples)
+                            // .splitCsv(sep: '\t')
+                            // .map { row ->
+                            //   def idSample  = row[0]
+                            //   def idFile   = row[1]
+                            //   [idSample, idFile]
+                            //   } 
 // split the ref genome into independent input channels for each process
 ref_TSD           =   Channel.fromPath(params.ref)
 ref_genoinput     =   Channel.fromPath(params.ref)
@@ -222,6 +228,7 @@ process insgen_genotype {
 
   output:
   file genotyping into samplegeno_ch
+  file samples into 
 
   script:
   """
