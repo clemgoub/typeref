@@ -77,7 +77,7 @@ alignPath_ch      =   Channel.fromPath(params.aln_path)
 alignSamples_ch   =   Channel
                             .fromPath(params.aln_samples)
                             .splitCsv(sep: '\t')
-                            .map { row -> [val(${row[0]}), file(${row[1]})]
+                            .map { row -> [val(row[0]), file(row[1])]
                               } 
 
                             //   alignSamples_ch   =   Channel
