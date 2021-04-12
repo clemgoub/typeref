@@ -92,7 +92,7 @@ ref_TSD           =   Channel.fromPath(params.ref)
 ref_genoinput     =   Channel.fromPath(params.ref)
 // load insertion-genotype submodules into dedicated channels
 insgen_prep_ch    =   Channel.fromPath( './bin/insertion-genotype/' )
-insegen_gen_ch    =   Channel.fromPath( './bin/insertion-genotype/' )
+insgen_gen_ch    =   Channel.fromPath( './bin/insertion-genotype/' )
 
 // ----------------------------------------
 // STEP 1
