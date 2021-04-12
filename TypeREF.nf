@@ -77,7 +77,7 @@ RMtrack_ch        =   Channel.fromPath(params.RM_track)
 alignSamples_ch   =   Channel
                             .fromPath(params.aln_samples)
                             .splitCsv(sep: '\t')
-                            .map { .map{ row-> tuple(row.sampleId, file(row.fileId)) }
+                            .map { row-> tuple(row.sampleId, file(row.fileId)) }
 
                             //   alignSamples_ch   =   Channel
                             // .fromPath(params.aln_samples)
