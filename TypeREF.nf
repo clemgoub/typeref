@@ -77,8 +77,7 @@ alignPath_ch      =   Channel.fromPath(params.aln_path)
 alignSamples_ch   =   Channel
                             .fromPath(params.aln_samples)
                             .splitCsv(sep: '\t')
-                            .map { row -> [val(row[0]), file(row[1])]
-                              } 
+                            .map { .map{ row-> tuple(row.sampleId, file(row.fileId)) }
 
                             //   alignSamples_ch   =   Channel
                             // .fromPath(params.aln_samples)
@@ -221,17 +220,16 @@ process insgen_genotype {
 
   input:
   file "TypeREF.allele" from input_Geno_ch_2
-  //file "insertion-genotype" from insgen_gen_ch
+  file "insertion-genotype" from insgen_gen_ch
   file "genotyping" from allelebase_ch
   file alnpath from alignPath_ch
-  set val(idSample), file(idFile) from alignSamples_ch
+  set sampleId, file(fileId) from alignSamples_ch
 
   output:
   file genotyping into samplegeno_ch
-  file samples into 
-
+  
   script:
   """
-  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $idSample --bwa bwa --bam $alnpath/$idFile --reference ${params.ref}
+  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $sampleId --bwa bwa --bam $alnpath/$fileId --reference ${params.ref}
   """
   }
