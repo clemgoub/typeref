@@ -73,7 +73,7 @@ if ( params.ref == null ) exit 1, "missing reference genome (--ref *.fasta)"
 // ASSIGN INPUT CHANNELS WITH USER-DEFINED FILE PATH
 meltvcf_ch        =   Channel.fromPath(params.meltvcf)
 RMtrack_ch        =   Channel.fromPath(params.RM_track)
-//alignPath_ch      =   Channel.fromPath(params.aln_path)
+alignPath_ch      =   Channel.fromPath(params.aln_path)
 alignSamples_ch   =   Channel
                             .fromPath(params.aln_samples)
                             .splitCsv(sep: '\t', header:true)
