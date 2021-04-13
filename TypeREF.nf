@@ -222,7 +222,7 @@ process insgen_genotype {
   file "TypeREF.allele" from input_Geno_ch_2
   file "insertion-genotype" from insgen_gen_ch
   file "genotyping" from allelebase_ch
-  //file alnpath from alignPath_ch
+  file alnpath from alignPath_ch
   set sampleId, file(fileId) from alignSamples_ch
 
   output:
