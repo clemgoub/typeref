@@ -40,6 +40,3 @@ RUN cpanm --force XML::Parser \
 	XML::Twig \
 	String::Approx \
 	List::MoreUtils
-
-#Install insertion-genotype
-RUN git clone https://github.com/KiddLab/insertion-genotype.git
