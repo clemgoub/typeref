@@ -10,7 +10,7 @@ params.TE 		      = 	"Alu" // SHOULD DISAPEAR TO ALLOW ALL TE AT THE SAME TIME
 params.outdir	      = 	"TypeREF-${date}"
 params.help		      =	  null
 params.ref          =   null
-params.aln_path     =   null
+//params.aln_path     =   null
 params.aln_samples  =   null
 params.cpu          =   1
 params.version      =   "0.0-dev"
@@ -76,7 +76,7 @@ if ( params.ref == null ) exit 1, "missing reference genome (--ref *.fasta)"
 // ASSIGN INPUT CHANNELS WITH USER-DEFINED FILE PATH
 meltvcf_ch        =   Channel.fromPath(params.meltvcf)
 RMtrack_ch        =   Channel.fromPath(params.RM_track)
-alignPath_ch      =   Channel.fromPath(params.aln_path)
+//alignPath_ch      =   Channel.fromPath(params.aln_path)
 alignSamples_ch   =   Channel
                             .fromPath(params.aln_samples)
                             .splitCsv(sep: '\t', header:true)
