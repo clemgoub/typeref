@@ -7,13 +7,14 @@ date = new Date().format( 'yyyyMMdd' )
 params.meltvcf 	    = 	null
 params.RM_track     = 	null // Default RM track for hg19 and hg38 are available in the "Ressources" folder
 params.TE 		      = 	"Alu" // SHOULD DISAPEAR TO ALLOW ALL TE AT THE SAME TIME
-params.out		      = 	"TypeREF-${date}"
+params.outdir	      = 	"TypeREF-${date}"
 params.help		      =	  null
 params.ref          =   null
 params.aln_path     =   null
 params.aln_samples  =   null
 params.cpu          =   1
 params.version      =   "0.0-dev"
+
 
 // SAY HELLO
 
@@ -54,7 +55,9 @@ if (params.help) {
   --aln_samples   two columns (tab delimited) with samples ID in column 1 and associated samples file names (.bam/.cram) in column 2. 
                   ex: NA12878  NA12878.project.blah.bam
                       NA12831  NA12831.project.blah.bam
-
+  Output:
+  --outdir        output directory to store results
+  
   Options:
   --cpu           max number of cpu to use during parralelized tasks (default: 1)
   --TE            TE type to be genotyped: Alu | LINE1 | SVA (default: Alu)
@@ -196,7 +199,7 @@ process insgen_createAlleles {
 
   input:
   file "TypeREF.allele" from input_Geno_ch_1
-  file "insertion-genotype" from insgen_prep_ch
+ // file "insertion-genotype" from insgen_prep_ch
 
 
   output:
@@ -205,7 +208,7 @@ process insgen_createAlleles {
   script:
   """
   mkdir genotyping
-  python2.7 $workflow.projectDir/bin/insertion-genotype/create-alternative-alleles.py --allelefile TypeREF.allele --allelebase genotyping --bwa bwa
+  python2.7 insertion-genotype/create-alternative-alleles.py --allelefile TypeREF.allele --allelebase genotyping --bwa bwa
   """
   
   }
@@ -218,11 +221,13 @@ process insgen_createAlleles {
 
 process insgen_genotype {
 
+  publishDir '${params.outdir}/genotyping'
+
   input:
   file "TypeREF.allele" from input_Geno_ch_2
-  file "insertion-genotype" from insgen_gen_ch
+//  file "insertion-genotype" from insgen_gen_ch
   file "genotyping" from allelebase_ch
-  file alnpath from alignPath_ch
+//  file alnpath from alignPath_ch
   set sampleId, file(fileId) from alignSamples_ch
 
   output:
@@ -230,6 +235,6 @@ process insgen_genotype {
   
   script:
   """
-  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $sampleId --bwa bwa --bam $fileId --reference ${params.ref}
+  python2.7 insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $sampleId --bwa bwa --bam $fileId --reference ${params.ref}
   """
   }
