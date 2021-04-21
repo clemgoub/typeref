@@ -80,7 +80,7 @@ RMtrack_ch        =   Channel.fromPath(params.RM_track)
 alignSamples_ch   =   Channel
                             .fromPath(params.aln_samples)
                             .splitCsv(sep: '\t', header:true)
-                            .map { row-> tuple(row.sampleId, file(row.fileId)) }
+                            .map { row-> tuple(row.sampleId, file(row.fileId), file(row.fileID + ".*ai")) }
 
                             //   alignSamples_ch   =   Channel
                             // .fromPath(params.aln_samples)
@@ -228,7 +228,7 @@ process insgen_genotype {
   file "TypeREF.allele" from input_Geno_ch_2
   file reference from ref_geno_gen_ch
   file "genotyping" from allelebase_ch
-  set sampleId, file(fileId) from alignSamples_ch
+  set sampleId, file(fileId), file(row.fileID + ".*ai") from alignSamples_ch
 
   output:
   file genotyping into samplegeno_ch
