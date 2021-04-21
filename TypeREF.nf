@@ -235,7 +235,7 @@ process insgen_genotype {
   
   script:
   """
-  samtools view $fileID | head
+  samtools view $fileId | head
   python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $sampleId --bwa bwa --bam $fileId --reference ${params.ref}
   """
   }
