@@ -93,6 +93,7 @@ alignSamples_ch   =   Channel
 // split the ref genome into independent input channels for each process
 ref_TSD           =   Channel.fromPath(params.ref)
 ref_genoinput     =   Channel.fromPath(params.ref)
+ref_geno_gen_ch   =   Channel.fromPath(params.ref)
 // load insertion-genotype submodules into dedicated channels
 insgen_prep_ch    =   Channel.fromPath( './bin/insertion-genotype/' )
 insgen_gen_ch    =   Channel.fromPath( './bin/insertion-genotype/' )
@@ -225,9 +226,8 @@ process insgen_genotype {
 
   input:
   file "TypeREF.allele" from input_Geno_ch_2
-//  file "insertion-genotype" from insgen_gen_ch
+  file reference from ref_geno_gen_ch
   file "genotyping" from allelebase_ch
-//  file alnpath from alignPath_ch
   set sampleId, file(fileId) from alignSamples_ch
 
   output:
@@ -235,6 +235,6 @@ process insgen_genotype {
   
   script:
   """
-  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $sampleId --bwa bwa --bam $fileId --reference ${params.ref}
+  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $sampleId --bwa bwa --bam $fileId --reference $reference
   """
   }
