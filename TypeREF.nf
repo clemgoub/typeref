@@ -80,7 +80,7 @@ alignPath_ch      =   Channel.fromPath(params.aln_path)
 alignSamples_ch   =   Channel
                             .fromPath(params.aln_samples)
                             .splitCsv(sep: '\t', header:true)
-                            .map { row -> tuple(row.sampleId, file(row.fileId), file(row.fileID + ".*ai")) }
+                            .map { row -> tuple(row.sampleId, file(row.fileId)) }
 
                             //   alignSamples_ch   =   Channel
                             // .fromPath(params.aln_samples)

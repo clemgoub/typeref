@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install --yes --no-install-recommends \
     vim-tiny \
     nano \
     git \
+    make \
     cmake \
     build-essential \
     gcc-multilib \
@@ -24,9 +25,13 @@ RUN apt-get update && apt-get install --yes --no-install-recommends \
     parallel \
     tabix \
     vcftools \
-    samtools \
     bwa \
-    python-pysam
+    python-pysam \
+    libbz2-dev \
+    zlib1g-dev \
+    libncurses5-dev \
+    libncursesw5-dev \
+    liblzma-dev
 
 # install bedtools 2.29.1 (bedtools must be this version for compatibility)
 RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary \
@@ -40,3 +45,22 @@ RUN cpanm --force XML::Parser \
 	XML::Twig \
 	String::Approx \
 	List::MoreUtils
+
+#Install htslib
+
+RUN cd /usr/bin \
+&&  wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2 \
+&&  tar -vxjf htslib-1.9.tar.bz2 \
+&&  cd htslib-1.9 \
+&&  make
+
+#Install samtools
+RUN cd /usr/bin \
+&&  wget https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2 \
+&&  tar -vxjf samtools-1.9.tar.bz2 \
+&&  cd samtools-1.9 \
+&&  make
+
+#Export paths
+ENV PATH=/usr/bin/samtools-1.9:$PATH
+ENV PATH=/usr/bin/htslib-1.9:$PATH
