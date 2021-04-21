@@ -228,7 +228,7 @@ process insgen_genotype {
   file "TypeREF.allele" from input_Geno_ch_2
   file reference from ref_geno_gen_ch
   file "genotyping" from allelebase_ch
-  set sampleId, file(fileId), file(row.fileID + ".*ai") from alignSamples_ch
+  set sampleId, file(fileId), file(fileID + ".*ai") from alignSamples_ch
 
   output:
   file genotyping into samplegeno_ch
