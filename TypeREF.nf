@@ -209,7 +209,6 @@ process insgen_createAlleles {
   """
   mkdir genotyping
   python2.7 $workflow.projectDir/bin/insertion-genotype/create-alternative-alleles.py --allelefile TypeREF.allele --allelebase genotyping --bwa bwa
-  
   """
   
   }
@@ -222,7 +221,7 @@ process insgen_createAlleles {
 
 process insgen_genotype {
 
-  publishDir '${params.outdir}/genotyping'
+  publishDir "${params.outdir}/genotyping"
 
   input:
   file "TypeREF.allele" from input_Geno_ch_2
@@ -236,6 +235,7 @@ process insgen_genotype {
   
   script:
   """
+  samtools view $fileID | head
   python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $sampleId --bwa bwa --bam $fileId --reference ${params.ref}
   """
   }
