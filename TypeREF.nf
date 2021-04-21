@@ -76,11 +76,11 @@ if ( params.ref == null ) exit 1, "missing reference genome (--ref *.fasta)"
 // ASSIGN INPUT CHANNELS WITH USER-DEFINED FILE PATH
 meltvcf_ch        =   Channel.fromPath(params.meltvcf)
 RMtrack_ch        =   Channel.fromPath(params.RM_track)
-//alignPath_ch      =   Channel.fromPath(params.aln_path)
+alignPath_ch      =   Channel.fromPath(params.aln_path)
 alignSamples_ch   =   Channel
                             .fromPath(params.aln_samples)
                             .splitCsv(sep: '\t', header:true)
-                            .map { row-> tuple(row.sampleId, file(row.fileId), file(row.fileID + ".*ai")) }
+                            .map { row -> tuple(row.sampleId, file(row.fileId), file(row.fileID + ".*ai")) }
 
                             //   alignSamples_ch   =   Channel
                             // .fromPath(params.aln_samples)
@@ -228,13 +228,14 @@ process insgen_genotype {
   file "TypeREF.allele" from input_Geno_ch_2
   file reference from ref_geno_gen_ch
   file "genotyping" from allelebase_ch
-  set sampleId, file(fileId), file(fileID + ".*ai") from alignSamples_ch
+  file "alignments" from alignPath_ch
+  set sampleId, file(fileId) from alignSamples_ch
 
   output:
   file genotyping into samplegeno_ch
   
   script:
   """
-  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $sampleId --bwa bwa --bam $fileId --reference $reference
+  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $sampleId --bwa bwa --bam $alignments/$fileId --reference $reference
   """
   }
