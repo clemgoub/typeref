@@ -81,16 +81,7 @@ alignSamples_ch   =   Channel
                             .fromPath(params.aln_samples)
                             .splitCsv(sep: '\t', header:true)
                             .map { row -> tuple(row.sampleId, file(row.fileId)) }
-                            .view()
 
-                            //   alignSamples_ch   =   Channel
-                            // .fromPath(params.aln_samples)
-                            // .splitCsv(sep: '\t')
-                            // .map { row ->
-                            //   def idSample  = row[0]
-                            //   def idFile   = row[1]
-                            //   [idSample, idFile]
-                            //   } 
 // split the ref genome into independent input channels for each process
 ref_TSD           =   Channel.fromPath(params.ref)
 ref_genoinput     =   Channel.fromPath(params.ref)
@@ -237,6 +228,8 @@ process insgen_genotype {
   
   script:
   """
-  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $sampleId --bwa bwa --bam $alignments/$fileId --reference $reference
+  echo "$sampleID" 
+  echo "$fileID"
+  # python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $sampleId --bwa bwa --bam $alignments/$fileId --reference $reference
   """
   }
