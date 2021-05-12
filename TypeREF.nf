@@ -221,15 +221,15 @@ process insgen_genotype {
   file reference from ref_geno_gen_ch
   file "genotyping" from allelebase_ch
   file "alignments" from alignPath_ch
-  set sampleId, file(fileId) from alignSamples_ch
+  tuple sampleId, file(fileId) from alignSamples_ch
 
   output:
   file "genotyping/samples/$sampleId/*.vcf" into samplegeno_ch
   
   script:
   """
-  echo "$sampleId" 
-  echo "$fileId"
-  # python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $sampleId --bwa bwa --bam $alignments/$fileId --reference $reference
+  # echo "$sampleId" 
+  # echo "$fileId"
+  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename $sampleId --bwa bwa --bam $alignments/$fileId --reference $reference
   """
   }
