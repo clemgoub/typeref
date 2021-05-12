@@ -10,7 +10,7 @@ params.TE 		      = 	"Alu" // SHOULD DISAPEAR TO ALLOW ALL TE AT THE SAME TIME
 params.outdir	      = 	"TypeREF-${date}"
 params.help		      =	  null
 params.ref          =   null
-//params.aln_path     =   null
+params.aln_path     =   null
 params.aln_samples  =   null
 params.cpu          =   1
 params.version      =   "0.0-dev"
@@ -96,7 +96,7 @@ ref_genoinput     =   Channel.fromPath(params.ref)
 ref_geno_gen_ch   =   Channel.fromPath(params.ref)
 // load insertion-genotype submodules into dedicated channels
 insgen_prep_ch    =   Channel.fromPath( './bin/insertion-genotype/' )
-insgen_gen_ch    =   Channel.fromPath( './bin/insertion-genotype/' )
+insgen_gen_ch     =   Channel.fromPath( './bin/insertion-genotype/' )
 
 // ----------------------------------------
 // STEP 1
@@ -222,7 +222,7 @@ process insgen_createAlleles {
 
 process insgen_genotype {
 
-  publishDir "${params.outdir}/genotyping"
+  publishDir "${params.outdir}/", mode: 'copy'
 
   input:
   file "TypeREF.allele" from input_Geno_ch_2
@@ -232,7 +232,7 @@ process insgen_genotype {
   set sampleId, file(fileId) from alignSamples_ch
 
   output:
-  file genotyping into samplegeno_ch
+  file "genotyping/samples/$sampleId/*.vcf" into samplegeno_ch
   
   script:
   """
