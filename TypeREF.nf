@@ -218,7 +218,7 @@ process insgen_genotype {
 
   input:
   set sampleId, file(fileId) from alignSamples_ch
-  file "TypeREF.allele" from input_Geno_ch_2
+  // file "TypeREF.allele" from input_Geno_ch_2
   // file "genotyping" from allelebase_ch
   // file "alignments" from alignPath_ch
  
