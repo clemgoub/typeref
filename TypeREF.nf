@@ -222,7 +222,7 @@ process insgen_genotype {
   file "genotyping" from allelebase_ch.collect()
   file "alignments" from alignPath_ch.collect()
  
-  // output:
+  output:
   file "genotyping/samples/$sampleId/*.vcf" into samplegeno_ch
   
   script:
