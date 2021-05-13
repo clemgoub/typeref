@@ -220,7 +220,7 @@ process insgen_genotype {
   set sampleId, file(fileId) from alignSamples_ch
   file "TypeREF.allele" from input_Geno_ch_2.toList()
   file "genotyping" from allelebase_ch.toList()
-  // file "alignments" from alignPath_ch.toList()
+  file "alignments" from alignPath_ch.toList()
   // file "ref" from ref_geno_gen_ch.toList()
  
   output:
