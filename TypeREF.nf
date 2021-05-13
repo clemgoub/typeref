@@ -228,7 +228,7 @@ process insgen_genotype {
   script:
   """
   echo "${sampleId}"
-  echo "${fileId} 
+  echo "${fileId}"
   """
   }
 
