@@ -1,5 +1,5 @@
 ###########################
-THIS PROJECT IS DEVELOPMENT
+THIS PROJECT IS UNDER DEVELOPMENT
 ###########################
 
 ### Using Singularity (HPC / machines without root privileges / CC)

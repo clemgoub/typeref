@@ -26,21 +26,12 @@ RUN apt-get update && apt-get install --yes --no-install-recommends \
     parallel \
     tabix \
     vcftools \
-    bwa \
     libbz2-dev \
     libcurl4-gnutls-dev \
     zlib1g-dev \
     libncurses5-dev \
     libncursesw5-dev \
     liblzma-dev
-
-
-# install miniconda
-# ENV PATH="/root/miniconda2/bin:${PATH}"
-# ARG PATH="/root/miniconda2/bin:${PATH}"
-# RUN wget \
-#    https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh \
-#    && bash Miniconda2-latest-Linux-x86_64.sh -b
 
 # install bedtools 2.29.1 (bedtools must be this version for compatibility)
 RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary \
@@ -75,10 +66,10 @@ RUN cd /usr/bin \
 &&  cd samtools-1.10 \
 &&  make
 
-# install pysam
-# RUN ~/miniconda2/bin/conda config --add channels r \
-# &&  ~/miniconda2/bin/conda config --add channels bioconda \
-# &&  ~/miniconda2/bin/conda install pysam
+# install bwa 
+RUN git clone https://github.com/lh3/bwa.git \
+&&  cd bwa \
+&&  make
 
 #Export paths
 ENV PATH=/usr/bin/samtools-1.10:$PATH
