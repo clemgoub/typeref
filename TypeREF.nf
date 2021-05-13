@@ -220,14 +220,14 @@ process insgen_genotype {
   set sampleId, file(fileId) from alignSamples_ch
   file "TypeREF.allele" from input_Geno_ch_2.collect() // .collect() allows the channel to be reused for each sample
   file "genotyping" from allelebase_ch.collect()
-  //file "alignments" from alignPath_ch.collect()
+  path "alignments" from alignPath_ch.collect()
  
   output:
   file "genotyping/samples/$sampleId/*.vcf" into samplegeno_ch
   
   script:
   """
-  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam ${params.aln_path}/${fileId} --reference ${params.ref}
+  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam ${alignments}/${fileId} --reference ${params.ref}
   """
   }
 
