@@ -247,12 +247,12 @@ process indexVcfs {
   file "genotyping/samples/${sampleId}/*.vcf" from samplegeno_vcfs
  
   output:
-  file "${samplegeno_vcfs.baseName}.gz" into indexed_vcfs
+  file "${samplegeno_vcfs}.gz" into indexed_vcfs
   
   script:
   """
-  bgzip -c ${samplegeno_vcfs} > ${samplegeno_vcfs.baseName}.gz
-  tabix -p vcf ${samplegeno_vcfs.baseName}.gz
+  bgzip -c ${samplegeno_vcfs} > ${samplegeno_vcfs}.gz
+  tabix -p vcf ${samplegeno_vcfs}.gz
   """
   }
 
@@ -261,14 +261,14 @@ process mergeVcfs {
   publishDir "${params.outdir}/", mode: 'copy'
 
   input:
-  file "${samplegeno_vcfs.baseName}.gz" from indexed_vcfs
+  file "${samplegeno_vcfs}.gz" from indexed_vcfs
    
   output:
   file "*.merged.TypeREF.vcf.gz" into typeref_outputs
   
   script:
   """
-  vcf-merge ./*/*.vcf.gz | bgzip -c > ${params.meltvcf.baseName}.merge.TypeTE.vcf.gz
+  vcf-merge ./*/*.vcf.gz | bgzip -c > ${params.meltvcf}.merge.TypeTE.vcf.gz
   """
   }
 
