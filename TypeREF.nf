@@ -263,14 +263,14 @@ process mergeVcfs {
   publishDir "${params.outdir}/", mode: 'copy'
 
   input:
-  file "${samplegeno_vcfs}" from indexed_vcfs
+  file "gzvcfs" from indexed_vcfs
    
   output:
   file "*.merged.TypeREF.vcf.gz" into typeref_outputs
   
   script:
   """
-  vcf-merge ${indexed_vcfs} | bgzip -c > ${params.meltvcf}.merge.TypeTE.vcf.gz
+  vcf-merge ${gzvcfs}/*.vcf.gz | bgzip -c > ${params.meltvcf}.merged.TypeREF.vcf.gz
   """
   }
 
