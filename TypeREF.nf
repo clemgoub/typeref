@@ -230,7 +230,7 @@ process insgen_genotype {
   script:
   """
   python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref
-  mkdir vcfs
+  mkdir -p vcfs
   bgzip -c genotyping/samples/${sampleId}/${sampleId}.vcf > vcfs/${sampleId}.vcf.gz
   tabix -p vcf vcfs/${sampleId}.vcf.gz
   """
@@ -272,7 +272,8 @@ process mergeVcfs {
   
   script:
   """
-  vcf-merge vcfs/*.vcf.gz | bgzip -c > ${params.meltvcf}.merged.TypeREF.vcf.gz
+  
+  vcf-merge vcfs/*.vcf.gz | bgzip -c > ${params.meltvcf.getSimpleName}.merged.TypeREF.vcf.gz
   """
   }
 
