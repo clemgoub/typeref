@@ -224,11 +224,13 @@ process insgen_genotype {
   file "ref" from ref_geno_gen_ch.toList()
  
   output:
-  file "genotyping/samples/${sampleId}/*.vcf" into samplegeno_vcfs
+  file "genotyping/samples/${sampleId}/*.vcf.gz" into indexed_vcfs
   
   script:
   """
   python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref
+  bgzip -c genotyping/samples/${sampleId}/${sampleId}.vcf > genotyping/samples/${sampleId}/${sampleId}.vcf.gz
+  tabix -p vcf genotyping/samples/${sampleId}/${sampleId}.vcf.gz
   """
   }
 
@@ -239,36 +241,36 @@ process insgen_genotype {
 //--------------------------------------
 // TO DO:
 
-process indexVcfs {
+// process indexVcfs {
 
-  publishDir "${params.outdir}/", mode: 'copy'
+//   publishDir "${params.outdir}/", mode: 'copy'
 
-  input:
-  file "genotyping/samples/${sampleId}/*.vcf" from samplegeno_vcfs
+//   input:
+//   file "genotyping/samples/${sampleId}/*.vcf" from samplegeno_vcfs
  
-  output:
-  file "${samplegeno_vcfs}.gz" into indexed_vcfs
+//   output:
+//   file "${samplegeno_vcfs}.gz" into indexed_vcfs
   
-  script:
-  """
-  bgzip -c ${samplegeno_vcfs} > ${samplegeno_vcfs}.gz
-  tabix -p vcf ${samplegeno_vcfs}.gz
-  """
-  }
+//   script:
+//   """
+//   bgzip -c ${samplegeno_vcfs} > ${samplegeno_vcfs}.gz
+//   tabix -p vcf ${samplegeno_vcfs}.gz
+//   """
+//   }
 
 process mergeVcfs {
 
   publishDir "${params.outdir}/", mode: 'copy'
 
   input:
-  file "${samplegeno_vcfs}.gz" from indexed_vcfs
+  file "${samplegeno_vcfs}" from indexed_vcfs
    
   output:
   file "*.merged.TypeREF.vcf.gz" into typeref_outputs
   
   script:
   """
-  vcf-merge ./*/*.vcf.gz | bgzip -c > ${params.meltvcf}.merge.TypeTE.vcf.gz
+  vcf-merge ${samplegeno_vcfs} | bgzip -c > ${params.meltvcf}.merge.TypeTE.vcf.gz
   """
   }
 
