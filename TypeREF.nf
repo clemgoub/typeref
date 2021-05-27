@@ -270,7 +270,7 @@ process mergeVcfs {
   
   script:
   """
-  vcf-merge ${samplegeno_vcfs} | bgzip -c > ${params.meltvcf}.merge.TypeTE.vcf.gz
+  vcf-merge ${indexed_vcfs} | bgzip -c > ${params.meltvcf}.merge.TypeTE.vcf.gz
   """
   }
 
