@@ -207,8 +207,8 @@ process insgen_createAlleles {
   }
 
 //--------------------------------------
-//STEP 6 - (sub: INSERTION-GENOTYPE 2/2)
-//GENOTYPE!!!!!!!
+// STEP 6 - (sub: INSERTION-GENOTYPE 2/2)
+// GENOTYPE!!!!!!!
 //--------------------------------------
 // TO DO:
 
@@ -224,7 +224,7 @@ process insgen_genotype {
   file "ref" from ref_geno_gen_ch.toList()
  
   output:
-  file "genotyping/samples/${sampleId}/*.vcf" into samplegeno_ch
+  file "genotyping/samples/${sampleId}/*.vcf" into samplegeno_vcfs
   
   script:
   """
@@ -233,4 +233,42 @@ process insgen_genotype {
   }
 
 
+//--------------------------------------
+// STEP 7
+// Merge vcfs
+//--------------------------------------
+// TO DO:
+
+process indexVcfs {
+
+  publishDir "${params.outdir}/", mode: 'copy'
+
+  input:
+  file "genotyping/samples/${sampleId}/*.vcf" from samplegeno_vcfs
+ 
+  output:
+  file "${samplegeno_vcfs.baseName}.gz" into indexed_vcfs
+  
+  script:
+  """
+  bgzip -c ${samplegeno_vcfs} > ${samplegeno_vcfs.baseName}.gz
+  tabix -p vcf ${samplegeno_vcfs.baseName}.gz
+  """
+  }
+
+process mergeVcfs {
+
+  publishDir "${params.outdir}/", mode: 'copy'
+
+  input:
+  file "${samplegeno_vcfs.baseName}.gz" from indexed_vcfs
+   
+  output:
+  file "*.merged.TypeREF.vcf.gz" into typeref_outputs
+  
+  script:
+  """
+  vcf-merge ./*/*.vcf.gz | bgzip -c > ${params.meltvcf.baseName}.merge.TypeTE.vcf.gz
+  """
+  }
 

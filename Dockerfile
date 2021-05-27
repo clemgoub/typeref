@@ -74,3 +74,4 @@ RUN git clone https://github.com/lh3/bwa.git \
 #Export paths
 ENV PATH=/usr/bin/samtools-1.10:$PATH
 ENV PATH=/usr/bin/htslib-1.10.2:$PATH
+ENV PATH=/bwa:$PATH
