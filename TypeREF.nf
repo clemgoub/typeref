@@ -225,14 +225,13 @@ process insgen_genotype {
  
   output:
   // file "genotyping/samples/${sampleId}/*.vcf.gz" into indexed_vcfs
-  file vcfs into indexed_vcfs
+  file "*.vcf.gz*" into indexed_vcfs
 
   script:
   """
   python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref
-  mkdir -p vcfs
-  bgzip -c genotyping/samples/${sampleId}/${sampleId}.vcf > vcfs/${sampleId}.vcf.gz
-  tabix -p vcf vcfs/${sampleId}.vcf.gz
+  bgzip -c genotyping/samples/${sampleId}/${sampleId}.vcf > ${sampleId}.vcf.gz
+  tabix -p vcf ${sampleId}.vcf.gz
   """
   }
 
@@ -272,7 +271,6 @@ process mergeVcfs {
   
   script:
   """
-  
   vcf-merge vcfs/*.vcf.gz | bgzip -c > TEST-VERSION.merged.TypeREF.vcf.gz
   """
   }
