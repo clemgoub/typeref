@@ -264,14 +264,14 @@ process mergeVcfs {
   publishDir "${params.outdir}/", mode: 'copy'
 
   input:
-  file "vcfs" from indexed_vcfs.collect()
+  file "*.vcf.gz*" from indexed_vcfs.collect()
    
   output:
   file "*.merged.TypeREF.vcf.gz" into typeref_outputs
   
   script:
   """
-  vcf-merge vcfs/*.vcf.gz | bgzip -c > TEST-VERSION.merged.TypeREF.vcf.gz
+  vcf-merge *.vcf.gz | bgzip -c > TEST-VERSION.merged.TypeREF.vcf.gz
   """
   }
 
