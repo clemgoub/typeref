@@ -273,7 +273,7 @@ process mergeVcfs {
   script:
   """
   
-  vcf-merge vcfs/*.vcf.gz | bgzip -c > ${params.meltvcf.getSimpleName}.merged.TypeREF.vcf.gz
+  vcf-merge vcfs/*.vcf.gz | bgzip -c > TEST-VERSION.merged.TypeREF.vcf.gz
   """
   }
 
