@@ -265,7 +265,7 @@ process mergeVcfs {
   publishDir "${params.outdir}/", mode: 'copy'
 
   input:
-  file "vcfs" from indexed_vcfs
+  file "vcfs" from indexed_vcfs.collect()
    
   output:
   file "*.merged.TypeREF.vcf.gz" into typeref_outputs
