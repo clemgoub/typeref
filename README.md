@@ -1,6 +1,9 @@
-###########################
-THIS PROJECT IS UNDER DEVELOPMENT
-###########################
+[![status](https://img.shields.io/badge/status:-dev-red)]() [![status: support](https://img.shields.io/badge/support:-no-red)]()
+
+🏗️ PROJECT UNDER DEVELOPMENT 🚧
+- Migration of Type-TE to Nextflow pipeline
+- Reference insertions only (see MELT2 and xTEA for non-reference insertions)
+- Alu, L1 and SVA genotyping
 
 ### Using Singularity (HPC / machines without root privileges / CC)
 
