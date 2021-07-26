@@ -259,12 +259,14 @@ process insgen_genotype {
 //   """
 //   }
 
+//use .collectFile() to concatenate the outputs of the indexed_vcfs channel
+
 process mergeVcfs {
 
   publishDir "${params.outdir}/", mode: 'copy'
 
   input:
-  file "*.vcf.gz*" from indexed_vcfs.collect()
+  file vcfFile from indexed_vcfs.collect()
    
   output:
   file "*.merged.TypeREF.vcf.gz" into typeref_outputs
