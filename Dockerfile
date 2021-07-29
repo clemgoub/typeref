@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install --yes --no-install-recommends \
     python \
     parallel \
     tabix \
-    vcftools \
+    autoconf \
     libbz2-dev \
     libcurl4-gnutls-dev \
     zlib1g-dev \
@@ -70,6 +70,22 @@ RUN cd /usr/bin \
 RUN git clone https://github.com/lh3/bwa.git \
 &&  cd bwa \
 &&  make
+
+
+# install autotools
+RUN apt-get install --yes --no-install-recommends \
+    pkg-config \
+    autotools-dev \
+    automake
+
+# install vcftools 0.1.16
+RUN wget https://github.com/vcftools/vcftools/archive/refs/tags/v0.1.16.tar.gz \
+&& tar -zxvf v0.1.16.tar.gz \
+&& cd vcftools-0.1.16/ \
+&& ./autogen.sh \
+&& ./configure \
+&& make \
+&& make install
 
 #Export paths
 ENV PATH=/usr/bin/samtools-1.10:$PATH
