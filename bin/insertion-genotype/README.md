@@ -1,3 +1,7 @@
+************
+NOTE: This version of `insertion-genotype` has been modified to accomodate the TypeREF pipeline
+************
+
 # insertion-genotype
 Genotyping Mobile Element Insertions based on remapping reads
 
