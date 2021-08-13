@@ -200,7 +200,7 @@ process inputGenotypes {
 process insgen_createAlleles {
 
   input:
-  file "TypeREF.allele" from input_Geno_ch_1.splitText( by: "${task.cpus}" )
+  file "TypeREF.allele" from input_Geno_ch_1.splitText( by: 8 )
  // file "insertion-genotype" from insgen_prep_ch
 
 
