@@ -199,7 +199,7 @@ process inputGenotypes {
 // --------------------------------------
 process insgen_createAlleles {
 
-  cpu = ${params.cpu}
+  cpus = ${params.cpu}
 
   input:
   file "TypeREF.allele" from input_Geno_ch_1.splitText( by: ${params.cpu} )
@@ -224,7 +224,7 @@ process insgen_createAlleles {
 
 process insgen_genotype {
 
-  cpu = ${params.cpu}
+  cpus = ${params.cpu}
   publishDir "${params.outdir}/", mode: 'copy'
 
   input:
