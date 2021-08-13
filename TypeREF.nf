@@ -223,6 +223,7 @@ process insgen_createAlleles {
 
 process insgen_genotype {
 
+  cpu = ${params.cpu}
   publishDir "${params.outdir}/", mode: 'copy'
 
   input:
