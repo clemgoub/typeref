@@ -281,7 +281,7 @@ process mergeVcfs {
   
   script:
   """
-  vcf-merge *.vcf.gz | bgzip -c > TEST-VERSION.merged.TypeREF.vcf.gz
+  vcf-merge *.vcf.gz > TEST-VERSION.merged.TypeREF.vcf
   """
   }
 
