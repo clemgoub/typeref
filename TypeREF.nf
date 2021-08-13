@@ -5,6 +5,7 @@ date = new Date().format( 'yyyyMMdd' )
 
 // USER INPUT PARAMETERS
 params.meltvcf 	    = 	null
+params.bed          =   null
 params.RM_track     = 	null // Default RM track for hg19 and hg38 are available in the "Ressources" folder
 params.TE 		      = 	"Alu" // SHOULD DISAPEAR TO ALLOW ALL TE AT THE SAME TIME
 params.outdir	      = 	"TypeREF-${date}"
@@ -44,10 +45,13 @@ if (params.help) {
   ------------------------------------------------
   
   Usage:
-  ./nextflow run  TypeREF.nf --meltvcf melt.del.vcf(.gz) --ref reference.genome.fasta --RM_track reference.TE.bed --aln_path path.to.bam.cram.dir --aln_samples samples.ID.filename.table [options]
+  ./nextflow run  TypeREF.nf [--meltvcf melt.del.vcf(.gz)/--bed RefTE.breakpoints.bed] --ref reference.genome.fasta --RM_track reference.TE.bed --aln_path path.to.bam.cram.dir --aln_samples samples.ID.filename.table [options]
   
   Input:
   --meltvcf       vcf (/vcf.gz) file preduced by MELT-DEL pipeline (Deletion-Merge command)
+  or
+  --bed           bed file with Reference TE breakpoints
+
   --ref           reference genome used with MELT (.fasta)
   --RM_track      RepeatMasker track for reference MEI (.bed) note: RM track for hg19 and hg38 are available in the "Ressources" folder
   --aln_path      path to bam/cram directory (all samples need to be in the same directory however, 
@@ -67,21 +71,25 @@ if (params.help) {
 }
 
 // VALIDATE INPUT
-if ( params.meltvcf == null ) exit 1, "missing input (--meltvcf *vcf/vcf.gz)"
+// if ( params.meltvcf == null ) exit 1, "missing input (--meltvcf *vcf/vcf.gz)"
 if ( params.RM_track == null ) exit 1, "missing Repeat Masker track (--RM_track *.bed)"
 if ( params.TE == null ) exit 1, "missing TE type (any: \"Alu\", \"LINE1\", \"SVA\")"
 if ( params.ref == null ) exit 1, "missing reference genome (--ref *.fasta)"
+if ( params.meltvcf != null & params.bed != null ) exit 1, "--meltvcf and --bed are exclusive"
+if ( params.meltvcf == null & params.bed == null ) exit 1, "no TE breakpoints provided (--meltvcf or --bed)"
 
 
 // ASSIGN INPUT CHANNELS WITH USER-DEFINED FILE PATH
-meltvcf_ch        =   Channel.fromPath(params.meltvcf)
 RMtrack_ch        =   Channel.fromPath(params.RM_track)
 alignPath_ch      =   Channel.fromPath(params.aln_path)
 alignSamples_ch   =   Channel
                             .fromPath(params.aln_samples)
                             .splitCsv(sep: '\t', header:true)
                             .map { row -> tuple(row.sampleId, file(row.fileId)) }
-
+if ( params.meltvcf != null )
+     in_ch = Channel.fromPath(params.meltvcf)
+else
+     in_ch = Channel.fromPath(params.bed)
 // split the ref genome into independent input channels for each process
 ref_TSD           =   Channel.fromPath(params.ref)
 ref_genoinput     =   Channel.fromPath(params.ref)
@@ -97,14 +105,14 @@ insgen_gen_ch     =   Channel.fromPath( './bin/insertion-genotype/' )
 
 process inputFromMelt {
 	input:
-	file meltvcf from meltvcf_ch // takes the file from the path in the channel
+	file inputfile from in_ch // takes the file from the path in the channel
     
   output:
   file "infile" into TypeDEL_in // will output in new channel TypeDEL_in
 
   script:
   """
-  input_from_melt_Del.sh $meltvcf > infile
+  input_from_melt_Del.sh $inputfile > infile
 	"""
 }
 
