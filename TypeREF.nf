@@ -75,8 +75,8 @@ if (params.help) {
 if ( params.RM_track == null ) exit 1, "missing Repeat Masker track (--RM_track *.bed)"
 if ( params.TE == null ) exit 1, "missing TE type (any: \"Alu\", \"LINE1\", \"SVA\")"
 if ( params.ref == null ) exit 1, "missing reference genome (--ref *.fasta)"
-if ( params.meltvcf != null & params.bed != null ) exit 1, "--meltvcf and --bed are exclusive"
-if ( params.meltvcf == null & params.bed == null ) exit 1, "no TE breakpoints provided (--meltvcf or --bed)"
+if ( params.meltvcf != null && params.bed != null ) exit 1, "--meltvcf and --bed are exclusive"
+if ( params.meltvcf == null && params.bed == null ) exit 1, "no TE breakpoints provided (--meltvcf or --bed)"
 
 
 // ASSIGN INPUT CHANNELS WITH USER-DEFINED FILE PATH
@@ -199,8 +199,6 @@ process inputGenotypes {
 // --------------------------------------
 process insgen_createAlleles {
 
-  cpus = ${params.cpu}
-
   input:
   file "TypeREF.allele" from input_Geno_ch_1.splitText( by: ${params.cpu} )
  // file "insertion-genotype" from insgen_prep_ch
@@ -224,7 +222,6 @@ process insgen_createAlleles {
 
 process insgen_genotype {
 
-  cpus = ${params.cpu}
   publishDir "${params.outdir}/", mode: 'copy'
 
   input:
