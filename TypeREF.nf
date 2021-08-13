@@ -187,6 +187,7 @@ process inputGenotypes {
   script:
   """
   paste <(sort -k1,1 output_TSD_Intervals.out/TEcordinates_with_bothtsd_cordinates.v.3.4.txt) <(sort -k1,1 file.correspondingRepeatMaskerTEs.txt) | cut -f 1-4,11 > RM_insertions_TSD_strands
+  samtools faidx $ref
   deletion_create_input.sh RM_insertions_TSD_strands $ref > TypeREF.allele
   """
   
