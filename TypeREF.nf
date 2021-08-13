@@ -182,7 +182,7 @@ process inputGenotypes {
   file "RM_insertions_TSD_strands" into interm_ch
   file "TypeREF.allele" into input_Geno_ch_1
   file "TypeREF.allele" into input_Geno_ch_2
-  //file 'inputGenotypes.log' into log_ch
+  file "*.fai" into index_ch
 
   script:
   """
@@ -230,6 +230,7 @@ process insgen_genotype {
   file "genotyping" from allelebase_ch.toList()
   file "alignments" from alignPath_ch.toList()
   file "ref" from ref_geno_gen_ch.toList()
+  file "*.fai" from index_ch
  
   output:
   // file "genotyping/samples/${sampleId}/*.vcf.gz" into indexed_vcfs
