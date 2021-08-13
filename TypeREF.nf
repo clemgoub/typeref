@@ -199,8 +199,10 @@ process inputGenotypes {
 // --------------------------------------
 process insgen_createAlleles {
 
+  cpu = ${params.cpu}
+
   input:
-  file "TypeREF.allele" from input_Geno_ch_1
+  file "TypeREF.allele" from input_Geno_ch_1.splitText( by: ${params.cpu} )
  // file "insertion-genotype" from insgen_prep_ch
 
 
@@ -219,7 +221,6 @@ process insgen_createAlleles {
 // STEP 6 - (sub: INSERTION-GENOTYPE 2/2)
 // GENOTYPE!!!!!!!
 //--------------------------------------
-// TO DO:
 
 process insgen_genotype {
 
@@ -250,26 +251,6 @@ process insgen_genotype {
 // STEP 7
 // Merge vcfs
 //--------------------------------------
-// TO DO:
-
-// process indexVcfs {
-
-//   publishDir "${params.outdir}/", mode: 'copy'
-
-//   input:
-//   file "genotyping/samples/${sampleId}/*.vcf" from samplegeno_vcfs
- 
-//   output:
-//   file "${samplegeno_vcfs}.gz" into indexed_vcfs
-  
-//   script:
-//   """
-//   bgzip -c ${samplegeno_vcfs} > ${samplegeno_vcfs}.gz
-//   tabix -p vcf ${samplegeno_vcfs}.gz
-//   """
-//   }
-
-//use .collectFile() to concatenate the outputs of the indexed_vcfs channel
 
 process mergeVcfs {
 
