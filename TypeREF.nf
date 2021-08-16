@@ -230,7 +230,7 @@ process insgen_genotype {
   file "genotyping" from allelebase_ch.toList()
   file "alignments" from alignPath_ch.toList()
   file "ref" from ref_geno_gen_ch.toList()
-  file "*.fai" from index_ch
+  file "*.fai" from index_ch.toList()
  
   output:
   // file "genotyping/samples/${sampleId}/*.vcf.gz" into indexed_vcfs
