@@ -239,6 +239,7 @@ process insgen_genotype {
 
   script:
   """
+  mkdir genotyping
   cp -r ./genotyping[0-9]*/* ./genotyping/
   python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref
   bgzip -c genotyping/samples/${sampleId}/${sampleId}.vcf > ${sampleId}.vcf.gz
