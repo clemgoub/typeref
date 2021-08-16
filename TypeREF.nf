@@ -261,11 +261,11 @@ process mergeVcfs {
   file vcfFile from indexed_vcfs.collect()
    
   output:
-  file "*.merged.TypeREF.vcf.gz" into typeref_outputs
+  file "TypeREF.merged.genotypes.vcf" into typeref_outputs
   
   script:
   """
-  vcf-merge *.vcf.gz > TEST-VERSION.merged.TypeREF.vcf
+  vcf-merge *.vcf.gz > TypeREF.merged.genotypes.vcf
   """
   }
 
