@@ -173,6 +173,8 @@ process findTSDs {
 
 process inputGenotypes {
 
+  publishDir "${params.outdir}/", mode: 'copy', glob: 'TypeREF.allele'
+
   input:
   file "output_TSD_Intervals.out" from TSD
   file "file.correspondingRepeatMaskerTEs.txt" from RM_inGeno
@@ -203,7 +205,6 @@ process insgen_createAlleles {
   file "TypeREF.allele" from input_Geno_ch_1.splitText( by: 8 )
  // file "insertion-genotype" from insgen_prep_ch
 
-
   output:
   file genotyping into allelebase_ch
 
@@ -222,7 +223,7 @@ process insgen_createAlleles {
 
 process insgen_genotype {
 
-  publishDir "${params.outdir}/", mode: 'copy'
+//  publishDir "${params.outdir}/", mode: 'copy'
 
   input:
   set sampleId, file(fileId) from alignSamples_ch
@@ -238,6 +239,7 @@ process insgen_genotype {
 
   script:
   """
+  cp -r ./genotyping[0-9]*/* ./genotyping/
   python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref
   bgzip -c genotyping/samples/${sampleId}/${sampleId}.vcf > ${sampleId}.vcf.gz
   tabix -p vcf ${sampleId}.vcf.gz
