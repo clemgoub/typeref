@@ -50,7 +50,7 @@ elif [[ $TSD == *.* ]] # if TSDs have mismatches, will keep the 5' one for the n
 
 	left_TE_del=$(sed 's/:/\t/g;s/-/\t/g' <(echo "$left") | awk '{print $1,($2-500),($2-1)}')
 	right_TE_del=$(sed 's/:/\t/g;s/-/\t/g' <(echo "$right") | awk '{print $1,$3,($3+500)}')
-	TE_loc=$(sed 's/:/\t/g;s/-/\t/g' <(echo "$left") | awk '{print $1,($2-500),($3+500)}') # the left and right TSD coordinates in case of "noTSDs" are actually the start and stop of the TE of the input file
+	TE_loc=$(paste -d ","  <(sed 's/:/\t/g;s/-/\t/g' <(echo "$left") | awk '{print $1,($2-500)}') <(sed 's/:/\t/g;s/-/\t/g' <(echo "$right") | awk '{print ($3+500)}') | sed $'s/,/\t/g')
 
 	 #echo "TWO TSD !!!!!!!!!!"
 	 #cho "$left_TE_del"
