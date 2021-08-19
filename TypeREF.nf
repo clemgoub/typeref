@@ -13,7 +13,7 @@ params.help		      =	  null
 params.ref          =   null
 params.aln_path     =   null
 params.aln_samples  =   null
-params.cpu          =   1
+// params.cpu          =   1
 params.version      =   "0.0-dev"
 
 
@@ -63,7 +63,6 @@ if (params.help) {
   --outdir        output directory to store results
   
   Options:
-  --cpu           max number of cpu to use during parralelized tasks (default: 1)
   --TE            TE type to be genotyped: Alu | LINE1 | SVA (default: Alu)
   --help          this message
   """
@@ -103,7 +102,7 @@ insgen_gen_ch     =   Channel.fromPath( './bin/insertion-genotype/' )
 // EXTRACT LOCI LIST AND INFO FROM MELT VCF
 // ----------------------------------------
 
-process inputFromMelt {
+process parse_input {
 	input:
 	file inputfile from in_ch // takes the file from the path in the channel
     
@@ -112,7 +111,7 @@ process inputFromMelt {
 
   script:
   """
-  input_from_melt_Del.sh $inputfile > infile
+  parse_input.sh $inputfile > infile
 	"""
 }
 
@@ -133,8 +132,8 @@ process matchRMloci {
   file "file.correspondingRepeatMaskerTEs.txt" into RM_inGeno // RM channel to host the output file for geno process
 	// if 'chr' in the vcf keep like that, otherwise, remove the 'chr' from the RM track for the bedtool intersct!
 	script:
-	"""
-	if grep -q "chr" $infile
+	""" 
+	if grep -q "chr" $infile 
 	then
 	01_DelP_findcorrespondinginsertion_v3.3.pl -t $RM_track -f $infile -p . -te ${params.TE}
 	else
@@ -157,8 +156,6 @@ process findTSDs {
 
   output:
   file "output_TSD_Intervals.out" into TSD // TSD channel to host the output file
-  //file "output_TSD_Intervals.out/TEcordinates_with_bothtsd_cordinates.v.3.4.txt" into TSD_1
-  //file "output_TSD_Intervals.out/file.correspondingRepeatMaskerTEs.txt" into TSD_2
 
   script:
   """
@@ -171,7 +168,7 @@ process findTSDs {
 // CREATE INPUTS FOR insertion-genotype
 // -------------------------------------
 
-process inputGenotypes {
+process createAlleles {
 
   publishDir "${params.outdir}/", mode: 'copy', glob: 'TypeREF.allele'
 
@@ -199,11 +196,10 @@ process inputGenotypes {
 // STEP 5 - (sub: INSERTION-GENOTYPE 1/2)
 // CREATE alleles and index with bwa
 // --------------------------------------
-process insgen_createAlleles {
+process insgen_indexAlleles {
 
   input:
   file "TypeREF.allele" from input_Geno_ch_1.splitText( by: 8 )
- // file "insertion-genotype" from insgen_prep_ch
 
   output:
   file genotyping into allelebase_ch
@@ -222,8 +218,6 @@ process insgen_createAlleles {
 //--------------------------------------
 
 process insgen_genotype {
-
-//  publishDir "${params.outdir}/", mode: 'copy'
 
   input:
   set sampleId, file(fileId) from alignSamples_ch
