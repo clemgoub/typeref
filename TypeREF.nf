@@ -188,10 +188,8 @@ process createAlleles {
   file "TypeREF.allele" into input_Geno_ch_2
   file "*.fai" into index_ch
 
-  script:
+  shell:
   """
-  #!/usr/bin/bash
-  
   join -11 -21 <(sort -k1,1 output_TSD_Intervals.out/TEcordinates_with_bothtsd_cordinates.v.3.4.txt) <(sort -k1,1 file.correspondingRepeatMaskerTEs.txt) | sed 's/ /\t/g' | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$10"\t"$8}' > RM_insertions_TSD_strands
   samtools faidx $ref
   deletion_create_input.sh RM_insertions_TSD_strands $ref > TypeREF.allele
