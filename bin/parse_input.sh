@@ -1,15 +1,14 @@
 #! /bin/bash
 
-# make the input table for reference ALU insertion detected by MELT
+# make the input table for reference insertion from a .bed file or a MELT .vcf/.vcf.gz
 #
-# USAGE: ./input_from_melt_Del.sh genotypes.vcf(.gz) inputname
+# USAGE: ./parse_input.sh <$1 = coordinates.bed/.vcf/.gzvcf> <$2 = TE_track>
 
-# source parameterfile_Ref.init
 
 if [[ $1 == *.bed ]]
 then
-
-awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}' $1
+bedtools closest -d -a <(sort -k1,1 -k2,2n $1) -b <(sort -k1,1 -k2,2n $2) > input_loci_correspondance
+bedtools closest -a <(sort -k1,1 -k2,2n $1) -b <(sort -k1,1 -k2,2n $2) | cut -f 7- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 
 else
 	testfile=$(file $1 | awk '{print $2}')
@@ -18,12 +17,19 @@ else
 
 	headline=$(zcat $1 | grep -n "#CHROM" | cut -d : -f 1)
 	MEINFO=$(zcat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | head -n 1 | sed 's/;/\t/g' |  awk '{for (i=1; i<=NF; ++i) { if ($i ~ "SVTYPE") printf i } } ')
-	zcat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | sed 's/;/\t/g' | awk -v tsd="$TSD" -v meifo="$MEINFO" '{print $1"_"$2,$1,$2, $meifo}' | sed 's/,/\t/g;s/TSD=//g;s/SVTYPE=//g' | awk '{print $1,$2,$3,$4}' 
+	END=$(zcat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | head -n 1 | sed 's/;/\t/g' |  awk '{for (i=1; i<=NF; ++i) { if ($i ~ "END") printf i } } ')
+	BED=$(zcat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | sed 's/;/\t/g' | awk -v end="$END" -v meifo="$MEINFO" '{print $1,$2,$end,$meifo}' | sed 's/,/\t/g;s/END=//g;s/SVTYPE=//g' |  awk '{print $1"\t"$2"\t"$3"\t"$4}' | sort -k1,1 -k2,2n -k3,3n)
+	bedtools closest -d -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) > input_loci_correspondance
+	bedtools closest -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | cut -f 5- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
+
 
 	else
 
 	headline=$(cat $1 | grep -n "#CHROM" | cut -d : -f 1)
 	MEINFO=$(cat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | head -n 1 | sed 's/;/\t/g' |  awk '{for (i=1; i<=NF; ++i) { if ($i ~ "SVTYPE") printf i } } ')
-	cat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | sed 's/;/\t/g' | awk -v tsd="$TSD" -v meifo="$MEINFO" '{print $1"_"$2,$1,$2, $meifo}' | sed 's/,/\t/g;s/TSD=//g;s/SVTYPE=//g' | awk '{print $1,$2,$3,$4}' 
+	END=$(cat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | head -n 1 | sed 's/;/\t/g' |  awk '{for (i=1; i<=NF; ++i) { if ($i ~ "END") printf i } } ')
+	BED=$(cat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | sed 's/;/\t/g' | awk -v end="$END" -v meifo="$MEINFO" '{print $1,$2,$end,$meifo}' | sed 's/,/\t/g;s/END=//g;s/SVTYPE=//g' |  awk '{print $1"\t"$2"\t"$3"\t"$4}' | sort -k1,1 -k2,2n -k3,3n)
+	bedtools closest -d -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) > input_loci_correspondance
+	bedtools closest -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | cut -f 5- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 	fi
 fi

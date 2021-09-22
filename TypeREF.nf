@@ -79,6 +79,7 @@ if ( params.meltvcf == null && params.bed == null ) exit 1, "no TE breakpoints p
 
 
 // ASSIGN INPUT CHANNELS WITH USER-DEFINED FILE PATH
+RMtrack_in        =   Channel.fromPath(params.RM_track)
 RMtrack_ch        =   Channel.fromPath(params.RM_track)
 alignPath_ch      =   Channel.fromPath(params.aln_path)
 alignSamples_ch   =   Channel
@@ -103,15 +104,19 @@ insgen_gen_ch     =   Channel.fromPath( './bin/insertion-genotype/' )
 // ----------------------------------------
 
 process parse_input {
+
+  publishDir "${params.outdir}/", mode: 'copy', glob: 'input_loci_correspondance'
+
 	input:
 	file inputfile from in_ch // takes the file from the path in the channel
-    
+  file RM_track from RMtrack_in // takes the TE type  
+
   output:
   file "infile" into TypeDEL_in // will output in new channel TypeDEL_in
 
   script:
   """
-  parse_input.sh $inputfile > infile
+  parse_input.sh $inputfile $RM_track > infile
 	"""
 }
 
@@ -185,7 +190,7 @@ process createAlleles {
 
   script:
   """
-  paste <(sort -k1,1 output_TSD_Intervals.out/TEcordinates_with_bothtsd_cordinates.v.3.4.txt) <(sort -k1,1 file.correspondingRepeatMaskerTEs.txt) | cut -f 1-4,11 > RM_insertions_TSD_strands
+  join -11 -21 <(sort -k1,1 output_TSD_Intervals.out/TEcordinates_with_bothtsd_cordinates.v.3.4.txt) <(sort -k1,1 file.correspondingRepeatMaskerTEs.txt) | sed 's/ /\t/g' | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$10"\t"$8}' > RM_insertions_TSD_strands
   samtools faidx $ref
   deletion_create_input.sh RM_insertions_TSD_strands $ref > TypeREF.allele
   """
