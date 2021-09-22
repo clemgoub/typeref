@@ -139,11 +139,31 @@ Options:
   --help          this message
 ```
 
-## Tips / Checklist
+## Tips / Known Issues
 
-- Nextflow and Singularity modules nead to be loaded
-- As much as possible, use the exact same reference genome than used for read alignment
-- Input only loci of one type of TE at a time (Alu[Y*], SVA[A/B/C/D/E/F] or L1)
+- Nextflow and Singularity modules need to be loaded
+- Keep the input data and the singularity image outside of the local `/typeref` repository directory.
+  ```
+  .
+  └─ Project/
+     └─── typeref/ (repos)
+     └─── data/ (includes alignments, ref genome, input coordinates, file list of sample to process)
+     └─── singularity_image/ (container for TypeREF)
+     └─── output_folder/
+  ```
+- Use the exact *same reference genome* as used for read alignments
+- Input only loci of one type of TE at a time (Alu, SVA or L1)
+- Check and resolve duplicated coordinates for a given TE type in the input bed or vcf (two distinct insertions can't share the same coordinates)
+   - example (coordinates from MELT2):
+   ```
+   chr1	74897	76697	L1MC5a   LINE/L1	+
+   chr1	74897	76697	L1PA2 LINE/L1	+
+   ```
+   - since they have the same coordinates, **pick one or the other**. TypeREF will update the annotation using our curated reference TE track.
+   ```
+   chr1	73845	76697	L1PA2.5INV.L1PA2	.	+
+   ```
+   > *In this case this locus is a L1PA2 with a 5' inversion and was splitted in two distinct intervals in the original TE track.*
 - Check that your input (vcf of bed) has the same contig/chromosome names the same format than the refernce genome. Most frequent error is the presence or not of the string `chr` between versions. Provided repeat tracks are compatible with both formats.
 - Erasing the `work/` folder produced by Nextflow can resolve some issues
 - An interupted job can be resumed if the `work` folder is saved. Use the `-resume` option (only one `-`)
