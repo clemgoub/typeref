@@ -116,8 +116,6 @@ RepeatMasker tracks for Alu, L1 and SVA are available for hg19 and hg38 in the f
     - genotyping (`insgen_Genotype`: by individual). 
 - memory: **<1Gb** per cpu
 
-*The following examples are for ~10 loci and 3 individuals*
-
 ### 3. Command line arguments
 ```
 Input:
