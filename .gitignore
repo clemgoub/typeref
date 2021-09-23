@@ -3,3 +3,4 @@ non_git_data
 .nextflow*
 .DS_Store
 work
+*.pyc

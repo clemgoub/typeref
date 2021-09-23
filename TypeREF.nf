@@ -113,11 +113,12 @@ process parse_input {
 
   output:
   file "infile" into TypeDEL_in // will output in new channel TypeDEL_in
+  file "input_loci_correspondance" into cor_ch
 
   script:
   """
   parse_input.sh $inputfile $RM_track > infile
-	"""
+  """
 }
 
 // ----------------------------------------------
@@ -134,8 +135,9 @@ process matchRMloci {
 
 	output:
 	file "file.correspondingRepeatMaskerTEs.txt" into RM_refTSD // RM channel to host the output file for next process
-  file "file.correspondingRepeatMaskerTEs.txt" into RM_inGeno // RM channel to host the output file for geno process
+        file "file.correspondingRepeatMaskerTEs.txt" into RM_inGeno // RM channel to host the output file for geno process
 	// if 'chr' in the vcf keep like that, otherwise, remove the 'chr' from the RM track for the bedtool intersct!
+
 	script:
 	""" 
 	if grep -q "chr" $infile 
@@ -190,7 +192,7 @@ process createAlleles {
 
   shell:
   """
-  join -11 -21 <(sort -k1,1 output_TSD_Intervals.out/TEcordinates_with_bothtsd_cordinates.v.3.4.txt) <(sort -k1,1 file.correspondingRepeatMaskerTEs.txt) | sed 's/ /\t/g' | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$10"\t"$8}' > RM_insertions_TSD_strands
+  join -11 -21 <(sort -k1,1 output_TSD_Intervals.out/TEcordinates_with_bothtsd_cordinates.v.3.4.txt) <(sort -k1,1 file.correspondingRepeatMaskerTEs.txt) | sed 's/ /\t/g' | awk '{print \$1"\t"\$2"\t"\$3"\t"\$4"\t"\$10"\t"\$8}' > RM_insertions_TSD_strands
   samtools faidx $ref
   deletion_create_input.sh RM_insertions_TSD_strands $ref > TypeREF.allele
   """
