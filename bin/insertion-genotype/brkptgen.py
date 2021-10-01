@@ -501,7 +501,7 @@ def read_samsel_hits(siteData):
    # we will impose a max number of reads to prevent underflow issues
    # this tends to happen at cases where we have duplication/centromere stuff
    # going on anyway
-   maxReads = 100
+   maxReads = 200
    if len(siteData['refErrorProbs']) > maxReads:
        siteData['refErrorProbs'] = siteData['refErrorProbs'][0:maxReads]
        print 'trimmed down ref counts to',len(siteData['refErrorProbs'])
