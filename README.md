@@ -59,7 +59,7 @@ singularity.autoMounts = true
     #### Example 1: `.vcf`
 
     ```
-    #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	PPMISI3658	PPMISI3666	PPMISI3966	PPMISI4110
+    #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SAMPLE1	SAMPLE2	SAMPLE3	SAMPLE4
     chr22	10673619	.	C	<CN:0>	.	.	SVTYPE=AluYi6;END=10673927;SVLEN=308;ADJLEFT=0;ADJRIGHT=0	GT:GL	0/0:-1.81,-13.25,-213.51	0/1:-90.1,-8.43,-48.16	0/0:-5.42,-9.63,-87.22	0/1:-39.7,-7.22,-82.03
     chr22	16159229	.	A	<CN:0>	.	.	SVTYPE=AluY;END=16159526;SVLEN=297;ADJLEFT=0;ADJRIGHT=0	GT:GL	0/1:-132,-19.87,-241.1	0/0:-0,-13.85,-254.5	0/0:-0,-13.25,-236.2	0/1:-108,-13.85,-160.8
     chr22	17091394	.	T	<CN:0>	.	.	SVTYPE=AluY;END=17091689;SVLEN=295;ADJLEFT=0;ADJRIGHT=0	GT:GL	0/0:-0,-16.26,-308.9	0/0:-0,-18.66,-346.1	0/0:-0.01,-12.64,-217.9	0/1:-192,-13.85,-84
@@ -74,21 +74,23 @@ singularity.autoMounts = true
 
    
    #### Example 2: `.bed`
-
+   
+   Input `.bed` file must have 6 columns (tab-delimited). The content of columns 4-6 can be replaced by ".", 1-3 need to be the ref TE coordinates
+   
+   ```
+    chr5	166877891	166878111	AluYk3	.	+
+    chr20	45108615	45108923	AluY	.	-
+    chr11	134147494	134147785	AluY	.	-
+    chr10	102827093	102827390	AluY	.	-
+    chr13	82026280	82026561	AluY	.	-
+    chr15	30684990	30685283	AluYe5	.	+
+    chr10	47510937	47511242	AluY	.	-
+    chr8	145009005	145009305	AluYf1	.	+
+    chr3	51475580	51475874	AluY	.	+
+    chr4	148568483	148568788	AluY	.	+
+    chr19	40498364	40498703	AluY	.	-
     ```
-    chr5	166877891	166878111	AluYk3	SINE/Alu	+
-    chr20	45108615	45108923	AluY	SINE/Alu	C
-    chr11	134147494	134147785	AluY	SINE/Alu	C
-    chr10	102827093	102827390	AluY	SINE/Alu	C
-    chr13	82026280	82026561	AluY	SINE/Alu	C
-    chr15	30684990	30685283	AluYe5	SINE/Alu	+
-    chr10	47510937	47511242	AluY	SINE/Alu	C
-    chr8	145009005	145009305	AluYf1	SINE/Alu	+
-    chr3	51475580	51475874	AluY	SINE/Alu	+
-    chr4	148568483	148568788	AluY	SINE/Alu	+
-    chr19	40498364	40498703	AluY	SINE/Alu	C
-    ```
-    > RepeatMasker track filtered for *AluY* elements
+    > `.bed` file for candidate *AluY* elements
 
 - **Reference genome** `--ref`: best to use the same file used in the original alignment.
 
@@ -113,8 +115,6 @@ RepeatMasker tracks for Alu, L1 and SVA are available for hg19 and hg38 in the f
     - allele indexing (`insgen_indexAlleles`: by batches of 8 loci at a time)
     - genotyping (`insgen_Genotype`: by individual). 
 - memory: **<1Gb** per cpu
-
-*The following examples are for ~10 loci and 3 individuals*
 
 ### 3. Command line arguments
 ```
