@@ -10,8 +10,8 @@
 
 ## Warning
 This version is under active developments. Results can be incorrect and some feature not working.
-- Alu and SVA: OK to test
-- LINE1: **not ready**
+- Alu: OK (same as TypeTE-del)
+- LINE1 and SVA: OK to test (**not benchmarked**)
 
 ## Overview 
 TypeREF is a program to genotype "reference" mobile elements insertions, namely **AluY**, **LINE1** and **SVA** retrotransposons.
