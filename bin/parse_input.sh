@@ -7,8 +7,8 @@
 
 if [[ $1 == *.bed ]]
 then
-bedtools closest -d -a <(sort -k1,1 -k2,2n $1) -b <(sort -k1,1 -k2,2n $2) > input_loci_correspondance
-bedtools closest -a <(sort -k1,1 -k2,2n $1) -b <(sort -k1,1 -k2,2n $2) | cut -f 7- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
+bedtools closest -d -a <(sort -k1,1 -k2,2n $1) -b <(sort -k1,1 -k2,2n $2) | awk '$NR < 50' > input_loci_correspondance
+bedtools closest -a <(sort -k1,1 -k2,2n $1) -b <(sort -k1,1 -k2,2n $2) | awk '$NR < 50' | cut -f 7- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 
 else
 	testfile=$(file $1 | awk '{print $2}')
@@ -19,8 +19,8 @@ else
 	MEINFO=$(zcat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | head -n 1 | sed 's/;/\t/g' |  awk '{for (i=1; i<=NF; ++i) { if ($i ~ "SVTYPE") printf i } } ')
 	END=$(zcat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | head -n 1 | sed 's/;/\t/g' |  awk '{for (i=1; i<=NF; ++i) { if ($i ~ "END") printf i } } ')
 	BED=$(zcat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | sed 's/;/\t/g' | awk -v end="$END" -v meifo="$MEINFO" '{print $1,$2,$end,$meifo}' | sed 's/,/\t/g;s/END=//g;s/SVTYPE=//g' |  awk '{print $1"\t"$2"\t"$3"\t"$4}' | sort -k1,1 -k2,2n -k3,3n)
-	bedtools closest -d -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) > input_loci_correspondance
-	bedtools closest -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | cut -f 5- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
+	bedtools closest -d -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | awk '$NR < 50' > input_loci_correspondance
+	bedtools closest -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | awk '$NR < 50' | cut -f 5- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 
 
 	else
@@ -29,7 +29,7 @@ else
 	MEINFO=$(cat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | head -n 1 | sed 's/;/\t/g' |  awk '{for (i=1; i<=NF; ++i) { if ($i ~ "SVTYPE") printf i } } ')
 	END=$(cat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | head -n 1 | sed 's/;/\t/g' |  awk '{for (i=1; i<=NF; ++i) { if ($i ~ "END") printf i } } ')
 	BED=$(cat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | sed 's/;/\t/g' | awk -v end="$END" -v meifo="$MEINFO" '{print $1,$2,$end,$meifo}' | sed 's/,/\t/g;s/END=//g;s/SVTYPE=//g' |  awk '{print $1"\t"$2"\t"$3"\t"$4}' | sort -k1,1 -k2,2n -k3,3n)
-	bedtools closest -d -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) > input_loci_correspondance
-	bedtools closest -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | cut -f 5- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
+	bedtools closest -d -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | awk '$NR < 50' > input_loci_correspondance
+	bedtools closest -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | awk '$NR < 50' | cut -f 5- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 	fi
 fi
