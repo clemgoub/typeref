@@ -9,11 +9,11 @@ if [[ $1 == *.bed ]]
 then
 	if grep -q "chr" $1
 		then
-		bedtools closest -d -a <(sort -k1,1 -k2,2n $1) -b <(sort -k1,1 -k2,2n $2) | awk '$NR < 50' > input_loci_correspondance
-		bedtools closest -a <(sort -k1,1 -k2,2n $1) -b <(sort -k1,1 -k2,2n $2) | awk '$NR < 50' | cut -f 7- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
+		bedtools closest -d -a <(sort -k1,1 -k2,2n $1) -b <(sort -k1,1 -k2,2n $2) | awk '$NF < 50' > input_loci_correspondance
+		bedtools closest -a <(sort -k1,1 -k2,2n $1) -b <(sort -k1,1 -k2,2n $2) | awk '$NF < 50' | cut -f 7- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 		else
-		bedtools closest -d -a <(sort -k1,1 -k2,2n $1) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '$NR < 50' > input_loci_correspondance
-		bedtools closest -a <(sort -k1,1 -k2,2n $1) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '$NR < 50' | cut -f 7- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
+		bedtools closest -d -a <(sort -k1,1 -k2,2n $1) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '$NF < 50' > input_loci_correspondance
+		bedtools closest -a <(sort -k1,1 -k2,2n $1) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '$NF < 50' | cut -f 7- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 	fi
 else
 	testfile=$(file $1 | awk '{print $2}')
@@ -26,11 +26,11 @@ else
 	BED=$(zcat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | sed 's/;/\t/g' | awk -v end="$END" -v meifo="$MEINFO" '{print $1,$2,$end,$meifo}' | sed 's/,/\t/g;s/END=//g;s/SVTYPE=//g' |  awk '{print $1"\t"$2"\t"$3"\t"$4}' | sort -k1,1 -k2,2n -k3,3n)
 		if grep -q "chr" $1
 		then
-		bedtools closest -d -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | awk '$NR < 50' > input_loci_correspondance
-		bedtools closest -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | awk '$NR < 50' | cut -f 5- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
+		bedtools closest -d -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | awk '$NF < 50' > input_loci_correspondance
+		bedtools closest -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | awk '$NF < 50' | cut -f 5- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 		else
-		bedtools closest -d -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '$NR < 50' > input_loci_correspondance
-		bedtools closest -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '$NR < 50' | cut -f 5- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
+		bedtools closest -d -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '$NF < 50' > input_loci_correspondance
+		bedtools closest -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '$NF < 50' | cut -f 5- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 	   fi
 
 	else
@@ -41,11 +41,11 @@ else
 	BED=$(cat $1 | awk -v varline="$headline" -F $'\t' 'NR > varline {print $1,$2,$8}' | sed 's/;/\t/g' | awk -v end="$END" -v meifo="$MEINFO" '{print $1,$2,$end,$meifo}' | sed 's/,/\t/g;s/END=//g;s/SVTYPE=//g' |  awk '{print $1"\t"$2"\t"$3"\t"$4}' | sort -k1,1 -k2,2n -k3,3n)
 		if grep -q "chr" $1
 		then
-		bedtools closest -d -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | awk '$NR < 50' > input_loci_correspondance
-		bedtools closest -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | awk '$NR < 50' | cut -f 5- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
+		bedtools closest -d -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | awk '$NF < 50' > input_loci_correspondance
+		bedtools closest -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sort -k1,1 -k2,2n $2) | awk '$NF < 50' | cut -f 5- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 		else
-		bedtools closest -d -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '$NR < 50' > input_loci_correspondance
-		bedtools closest -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '$NR < 50' | cut -f 5- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
+		bedtools closest -d -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '$NF < 50' > input_loci_correspondance
+		bedtools closest -a <(sort -k1,1 -k2,2n <(echo "$BED")) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '$NF < 50' | cut -f 5- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 	    fi
 	fi
 fi
