@@ -135,7 +135,7 @@ process matchRMloci {
 
 	output:
 	file "file.correspondingRepeatMaskerTEs.txt" into RM_refTSD // RM channel to host the output file for next process
-        file "file.correspondingRepeatMaskerTEs.txt" into RM_inGeno // RM channel to host the output file for geno process
+  file "file.correspondingRepeatMaskerTEs.txt" into RM_inGeno // RM channel to host the output file for geno process
 	// if 'chr' in the vcf keep like that, otherwise, remove the 'chr' from the RM track for the bedtool intersct!
 
 	script:
@@ -144,7 +144,7 @@ process matchRMloci {
 	then
 	01_DelP_findcorrespondinginsertion_v3.3.pl -t $RM_track -f $infile -p . -te ${params.TE}
 	else
-	sed 's/chr//g' $RM_track > RM_track.alt
+	sed -E 's/chr//g' $RM_track > RM_track.alt
 	01_DelP_findcorrespondinginsertion_v3.3.pl -t RM_track.alt -f $infile -p . -te ${params.TE}
 	fi
 	"""
