@@ -29,8 +29,8 @@ else
 		bedtools intersect -wao -a <(awk '{print $1"\t"($2-50)"\t"($3+50)"\t"$4}' <(echo "$BED") | sort -k1,1 -k2,2n) -b <(sort -k1,1 -k2,2n $2) | awk '{print $1":"$2"-"$3"\t"$0}' | sort -k1,1 -k13,13nr | sort -u -k1,1 | cut -f 2- > input_loci_correspondance
 		bedtools intersect -wao -a <(awk '{print $1"\t"($2-50)"\t"($3+50)"\t"$4}' <(echo "$BED") | sort -k1,1 -k2,2n) -b <(sort -k1,1 -k2,2n $2) | awk '{print $1":"$2"-"$3"\t"$0}' | sort -k1,1 -k13,13nr | sort -u -k1,1 | cut -f 6- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 		else
-		bedtools intersect -wao -a <(awk '{print $1"\t"($2-50)"\t"($3+50)"\t"$4}' <(echo "$BED") | sort -k1,1 -k2,2n) -b <(sed -E 's/chr//g' $2) | sort -k1,1 -k2,2n) | awk '{print $1":"$2"-"$3"\t"$0}' | sort -k1,1 -k13,13nr | sort -u -k1,1 | cut -f 2- > input_loci_correspondance
-		bedtools intersect -wao -a <(awk '{print $1"\t"($2-50)"\t"($3+50)"\t"$4}' <(echo "$BED") | sort -k1,1 -k2,2n) -b <(sed -E 's/chr//g' $2) | sort -k1,1 -k2,2n) | awk '{print $1":"$2"-"$3"\t"$0}' | sort -k1,1 -k13,13nr | sort -u -k1,1 | cut -f 6- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
+		bedtools intersect -wao -a <(awk '{print $1"\t"($2-50)"\t"($3+50)"\t"$4}' <(echo "$BED") | sort -k1,1 -k2,2n) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '{print $1":"$2"-"$3"\t"$0}' | sort -k1,1 -k13,13nr | sort -u -k1,1 | cut -f 2- > input_loci_correspondance
+		bedtools intersect -wao -a <(awk '{print $1"\t"($2-50)"\t"($3+50)"\t"$4}' <(echo "$BED") | sort -k1,1 -k2,2n) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '{print $1":"$2"-"$3"\t"$0}' | sort -k1,1 -k13,13nr | sort -u -k1,1 | cut -f 6- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 		fi
 
 	else
@@ -44,8 +44,8 @@ else
 		bedtools intersect -wao -a <(awk '{print $1"\t"($2-50)"\t"($3+50)"\t"$4}' <(echo "$BED") | sort -k1,1 -k2,2n) -b <(sort -k1,1 -k2,2n $2) | awk '{print $1":"$2"-"$3"\t"$0}' | sort -k1,1 -k13,13nr | sort -u -k1,1 | cut -f 2- > input_loci_correspondance
 		bedtools intersect -wao -a <(awk '{print $1"\t"($2-50)"\t"($3+50)"\t"$4}' <(echo "$BED") | sort -k1,1 -k2,2n) -b <(sort -k1,1 -k2,2n $2) | awk '{print $1":"$2"-"$3"\t"$0}' | sort -k1,1 -k13,13nr | sort -u -k1,1 | cut -f 6- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 		else
-		bedtools intersect -wao -a <(awk '{print $1"\t"($2-50)"\t"($3+50)"\t"$4}' <(echo "$BED") | sort -k1,1 -k2,2n) -b <(sed -E 's/chr//g' $2) | sort -k1,1 -k2,2n) | awk '{print $1":"$2"-"$3"\t"$0}' | sort -k1,1 -k13,13nr | sort -u -k1,1 | cut -f 2- > input_loci_correspondance
-		bedtools intersect -wao -a <(awk '{print $1"\t"($2-50)"\t"($3+50)"\t"$4}' <(echo "$BED") | sort -k1,1 -k2,2n) -b <(sed -E 's/chr//g' $2) | sort -k1,1 -k2,2n) | awk '{print $1":"$2"-"$3"\t"$0}' | sort -k1,1 -k13,13nr | sort -u -k1,1 | cut -f 6- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
+		bedtools intersect -wao -a <(awk '{print $1"\t"($2-50)"\t"($3+50)"\t"$4}' <(echo "$BED") | sort -k1,1 -k2,2n) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '{print $1":"$2"-"$3"\t"$0}' | sort -k1,1 -k13,13nr | sort -u -k1,1 | cut -f 2- > input_loci_correspondance
+		bedtools intersect -wao -a <(awk '{print $1"\t"($2-50)"\t"($3+50)"\t"$4}' <(echo "$BED") | sort -k1,1 -k2,2n) -b <(sed -E 's/chr//g' $2 | sort -k1,1 -k2,2n) | awk '{print $1":"$2"-"$3"\t"$0}' | sort -k1,1 -k13,13nr | sort -u -k1,1 | cut -f 6- | sort | uniq | awk '!/^#/ {print $1"_"$2"\t"$1"\t"$2"\t"$4}'
 		fi
 	fi
 fi
