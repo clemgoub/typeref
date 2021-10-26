@@ -141,16 +141,9 @@ Options:
 
 ## Tips / Known Issues
 
+The following lists the most common sources of error. For a complete status of the current and fixed bugs, [please read here](https://hackmd.io/AHbY8ms-Taeb0q0T920Flg?view).
+
 - Nextflow and Singularity modules need to be loaded
-- Keep the input data and the singularity image outside of the local `/typeref` repository directory.
-  ```
-  .
-  └─ Project/
-     └─── typeref/ (repos)
-     └─── data/ (includes alignments, ref genome, input coordinates, file list of sample to process)
-     └─── singularity_image/ (container for TypeREF)
-     └─── output_folder/
-  ```
 - Use the exact *same reference genome* as used for read alignments
 - Input only loci of one type of TE at a time (Alu, SVA or L1)
 - Check and resolve duplicated coordinates for a given TE type in the input bed or vcf (two distinct insertions can't share the same coordinates)
@@ -165,6 +158,15 @@ Options:
    ```
    > *In this case this locus is a L1PA2 with a 5' inversion and was splitted in two distinct intervals in the original TE track.*
 - Check that your input (vcf of bed) has the same contig/chromosome names the same format than the refernce genome. Most frequent error is the presence or not of the string `chr` between versions. Provided repeat tracks are compatible with both formats.
+- Keep the input data and the singularity image outside of the local `/typeref` repository directory.
+  ```
+  .
+  └─ Project/
+     └─── typeref/ (repos)
+     └─── data/ (includes alignments, ref genome, input coordinates, file list of sample to process)
+     └─── singularity_image/ (container for TypeREF)
+     └─── output_folder/
+  ```
 - Erasing the `work/` folder produced by Nextflow can resolve some issues
 - An interupted job can be resumed if the `work` folder is saved. Use the `-resume` option (only one `-`)
 
