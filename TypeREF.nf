@@ -239,8 +239,10 @@ process insgen_genotype {
   file "*.vcf.gz*" into indexed_vcfs
 
   script:
+  // check if we have multiple genotyping folder by searching for "genotyping1" -- otherwise folder is called "genotyping"
+  // if multiple genotyping folders, make a new "genotyping" folder and copy the content of the different folders into it
   """
-  if [[ -d ./genotyping[0-9]*/* ]]; then
+  if [[ -d ./genotyping1 ]]; then
     mkdir -p genotyping
     cp -r ./genotyping[0-9]*/* ./genotyping/
   fi
