@@ -56,14 +56,15 @@ if (params.help) {
   --RM_track      RepeatMasker track for reference MEI (.bed) note: RM track for hg19 and hg38 are available in the "Ressources" folder
   --aln_path      path to bam/cram directory (all samples need to be in the same directory however, 
                   the files to analyse will be only those in the aln_samples table)
-  --aln_samples   two columns (tab delimited) with samples ID in column 1 and associated samples file names (.bam/.cram) in column 2. 
-                  ex: NA12878  NA12878.project.blah.bam
+  --aln_samples   two columns (tab delimited) with header and samples ID in column 1 and associated samples file names (.bam/.cram) in column 2. 
+                  ex: sampleId fileId
+                      NA12878  NA12878.project.blah.bam
                       NA12831  NA12831.project.blah.bam
   Output:
   --outdir        output directory to store results
   
   Options:
-  --TE            TE type to be genotyped: Alu | LINE1 | SVA (default: Alu)
+  --TE            TE type to be genotyped: Alu | L1 | SVA (default: Alu)
   --help          this message
   """
   exit 1
@@ -71,11 +72,12 @@ if (params.help) {
 
 // VALIDATE INPUT
 // if ( params.meltvcf == null ) exit 1, "missing input (--meltvcf *vcf/vcf.gz)"
-if ( params.RM_track == null ) exit 1, "missing Repeat Masker track (--RM_track *.bed)"
-if ( params.TE == null ) exit 1, "missing TE type (any: \"Alu\", \"LINE1\", \"SVA\")"
-if ( params.ref == null ) exit 1, "missing reference genome (--ref *.fasta)"
-if ( params.meltvcf != null && params.bed != null ) exit 1, "--meltvcf and --bed are exclusive"
-if ( params.meltvcf == null && params.bed == null ) exit 1, "no TE breakpoints provided (--meltvcf or --bed)"
+if ( params.RM_track == null ) exit 1, "Error: missing Repeat Masker track (--RM_track *.bed)"
+if ( params.TE == null ) exit 1, "Error: missing TE type (any: \"Alu (default)\", \"L1\", \"SVA\")"
+if ( params.TE != "Alu" || params.TE != "L1" || params.TE != "SVA" ) exit 1, "Error: incorrect TE type entered (use any: \"Alu (default)\", \"L1\", \"SVA\")"
+if ( params.ref == null ) exit 1, "Error: missing reference genome (--ref *.fasta)"
+if ( params.meltvcf != null && params.bed != null ) exit 1, "Error: --meltvcf and --bed are exclusive"
+if ( params.meltvcf == null && params.bed == null ) exit 1, "Error: no TE breakpoints provided (--meltvcf or --bed)"
 
 
 // ASSIGN INPUT CHANNELS WITH USER-DEFINED FILE PATH
@@ -166,7 +168,7 @@ process findTSDs {
 
   script:
   """
-  03_DelP_findTSD_forRMTEcordinates_v3.4.pl -t file.correspondingRepeatMaskerTEs.txt -p output_TSD_Intervals.out -g $ref
+  03_DelP_findTSD_forRMTEcordinates_v3.6.pl -t file.correspondingRepeatMaskerTEs.txt -p output_TSD_Intervals.out -g $ref
   """
   }
 
