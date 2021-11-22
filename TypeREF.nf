@@ -74,7 +74,7 @@ if (params.help) {
 // if ( params.meltvcf == null ) exit 1, "missing input (--meltvcf *vcf/vcf.gz)"
 if ( params.RM_track == null ) exit 1, "Error: missing Repeat Masker track (--RM_track *.bed)"
 if ( params.TE == null ) exit 1, "Error: missing TE type (any: \"Alu (default)\", \"L1\", \"SVA\")"
-if ( params.TE != "Alu" || params.TE != "L1" || params.TE != "SVA" ) exit 1, "Error: incorrect TE type entered (use any: \"Alu (default)\", \"L1\", \"SVA\")"
+if ( params.TE != "Alu|L1|SVA" ) exit 1, "Error: incorrect TE type entered (use any: \"Alu (default)\", \"L1\", \"SVA\")"
 if ( params.ref == null ) exit 1, "Error: missing reference genome (--ref *.fasta)"
 if ( params.meltvcf != null && params.bed != null ) exit 1, "Error: --meltvcf and --bed are exclusive"
 if ( params.meltvcf == null && params.bed == null ) exit 1, "Error: no TE breakpoints provided (--meltvcf or --bed)"
