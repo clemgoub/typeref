@@ -168,7 +168,7 @@ process findTSDs {
 
   script:
   """
-  03_DelP_findTSD_forRMTEcordinates_v3.6.pl -t file.correspondingRepeatMaskerTEs.txt -p output_TSD_Intervals.out -g $ref
+  03_DelP_findTSD_forRMTEcordinates_v3.4.pl -t file.correspondingRepeatMaskerTEs.txt -p output_TSD_Intervals.out -g $ref
   """
   }
 

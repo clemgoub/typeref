@@ -348,7 +348,7 @@ sub extract_genomicseqflank {
 				} else {
 					print LOG "$chr was not found in $GENOME\n";
 				}
-			} elsif ($strand eq "C") {
+			} elsif ($strand eq "-") {
 				my $leftend = $end + 40;
 				my $leftstart = $end - 5;
 				my $rightstart = $start - 35;
