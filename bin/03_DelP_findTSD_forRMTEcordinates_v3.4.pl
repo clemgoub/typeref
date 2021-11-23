@@ -405,7 +405,7 @@ sub findcord_bothtsds {
 				$gloc = $uniqlocus."\t".$gchr.":".$tsd1start."-".$tsd1end."\t".$gchr.":".$tsd2start."-".$tsd2end;
 				$TEcor_bothtsd{$gloc} = $tsd;
 				$exactmatch{$gID} = 'exactmatch';
-			} elsif ($tstrand eq 'C') {
+			} elsif ($tstrand eq '-') {
 				my $gchr = $tchr;
 				my $tsd1end = $tstart - $rigindex;
 				my $tsd1start = ($tsd1end - $tkmerlen) + 1;
@@ -544,7 +544,7 @@ sub findcord_bothTSDs_approx {
 				$apptsdfound{$gID} = 1;
 				#push (@{$duplicatesappmatch{$uniqlocus}},{$element => $eledetails});
 				#push (@multipelTSDinfo, {$element => $eledetails}) ;
-			} elsif ($tstrand eq 'C') {
+			} elsif ($tstrand eq '-') {
 				my $gchr = $tchr;
 				my $tsd1end = $tstart - $rigindex;
 				my $tsd1start = ($tsd1end - $tkmerlen) + 1;#  because the tsd is identifed on reverse complimented sequence
@@ -603,7 +603,7 @@ sub findcord_bothTSDs_approxhASH {
 					$apptsdfound{$gID} = 1;
 					#push (@{$duplicatesappmatch{$uniqlocus}},{$element => $eledetails});
 					#push (@multipelTSDinfo, {$element => $eledetails}) ;
-				} elsif ($tstrand eq 'C') {
+				} elsif ($tstrand eq '-') {
 					my $gchr = $tchr;
 					my $tsd1end = $tstart - $rigindex;
 					my $tsd1start = ($tsd1end - $tkmerlen) + 1;#  because the tsd is identifed on reverse complimented sequence
@@ -654,8 +654,8 @@ sub findinarray {
 			my @position = split /\./,$data;#$gID = $uniqlocus.".".$tchr.".".$tstart.".".$tend.".".$tstrand;
 			my $start_te = ($position[2]-5) if ($position[4] eq "+");
 			my $end_te = ($position[3] + 10) if ($position[4] eq "+");
-			$end_te = ($position[3]+5) if ($position[4] eq "C");#5 should be added to the 3'end
-			$start_te = ($position[2] - 10) if ($position[4] eq "C");
+			$end_te = ($position[3]+5) if ($position[4] eq "-");#5 should be added to the 3'end
+			$start_te = ($position[2] - 10) if ($position[4] eq "-");
 			my $glocat = $position[0]."\t".$position[1].":".$start_te."-".$end_te."\t".$position[1].":".$start_te."-".$end_te;
 			$TEcor_notsd{$glocat} = "noTSDs";
 		}
