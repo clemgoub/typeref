@@ -191,12 +191,14 @@ process createAlleles {
   file "TypeREF.allele" into input_Geno_ch_1
   file "TypeREF.allele" into input_Geno_ch_2
   file "*.fai" into index_ch
+  file "exclusion.bed" into exclusion_ch
 
   shell:
   """
   join -11 -21 <(sort -k1,1 output_TSD_Intervals.out/TEcordinates_with_bothtsd_cordinates.v.3.4.txt) <(sort -k1,1 file.correspondingRepeatMaskerTEs.txt) | sed 's/ /\t/g' | awk '{print \$1"\t"\$2"\t"\$3"\t"\$4"\t"\$10"\t"\$8}' > RM_insertions_TSD_strands
   samtools faidx $ref
   deletion_create_input.sh RM_insertions_TSD_strands $ref > TypeREF.allele
+  awk '{print \$1}' TypeREF.allele | sed 's/:/\t/g;s/-/\t/g' | awk '{print \$1":"\$2"-"\$3"_genome\t500\t"500+(\$3-\$2)}' > exclusion.bed
   """
   
   }
@@ -209,6 +211,7 @@ process insgen_indexAlleles {
 
   input:
   file "TypeREF.allele" from input_Geno_ch_1.splitText( by: 8 )
+  file "exclusion.bed" from exclusion_ch
 
   output:
   file genotyping into allelebase_ch
@@ -216,7 +219,7 @@ process insgen_indexAlleles {
   script:
   """
   mkdir genotyping
-  python2.7 $workflow.projectDir/bin/insertion-genotype/create-alternative-alleles.py --allelefile TypeREF.allele --allelebase genotyping --bwa bwa
+  python2.7 $workflow.projectDir/bin/insertion-genotype/create-alternative-alleles.py --allelefile TypeREF.allele --allelebase genotyping --bwa bwa --excludefile exclusion.bed 
   """
   
   }
