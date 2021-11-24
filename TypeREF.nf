@@ -211,15 +211,14 @@ process insgen_indexAlleles {
 
   input:
   file "TypeREF.allele" from input_Geno_ch_1.splitText( by: 8 )
-  file "exclusion.bed" from exclusion_ch
-
+ 
   output:
   file genotyping into allelebase_ch
 
   script:
   """
   mkdir genotyping
-  python2.7 $workflow.projectDir/bin/insertion-genotype/create-alternative-alleles.py --allelefile TypeREF.allele --allelebase genotyping --bwa bwa --excludefile exclusion.bed 
+  python2.7 $workflow.projectDir/bin/insertion-genotype/create-alternative-alleles.py --allelefile TypeREF.allele --allelebase genotyping --bwa bwa
   """
   
   }
@@ -238,7 +237,8 @@ process insgen_genotype {
   file "alignments" from alignPath_ch.toList()
   file "ref" from ref_geno_gen_ch.toList()
   file "*.fai" from index_ch.toList()
- 
+  file "exclusion.bed" from exclusion_ch
+
   output:
   // file "genotyping/samples/${sampleId}/*.vcf.gz" into indexed_vcfs
   file "*.vcf.gz*" into indexed_vcfs
@@ -251,7 +251,7 @@ process insgen_genotype {
     mkdir -p genotyping
     cp -r ./genotyping[0-9]*/* ./genotyping/
   fi
-  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref
+  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref --excludefile exclusion.bed 
   bgzip -c genotyping/samples/${sampleId}/${sampleId}.vcf > ${sampleId}.vcf.gz
   tabix -p vcf ${sampleId}.vcf.gz
   """
