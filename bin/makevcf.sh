@@ -13,7 +13,7 @@ paste <(paste <(sed 's/:/\t/g;s/-/\t/g' RM_insertions_TSD_strands | cut -f 1-7) 
 # get reference sequences coordinates and extract to add to vcf | -1 to left coordinate is to inclue this base in the vcf
 paste <(paste <(sed 's/:/\t/g;s/-/\t/g' RM_insertions_TSD_strands | cut -f 1-7) <(cut -f 4- RM_insertions_TSD_strands) | awk '{if ($8 == "noTSDs") {print $2"\t"($3-1)"\t"$4"\t"$1} else if ($9 == "+"){print $2"\t"($4-1)"\t"$7"\t"$1} else {print $2"\t"($3-1)"\t"$6"\t"$1}}') | sort -k4,4 > ref.bed
 # rearange the columns to become a real vcf body
-paste <(cut -f 2,3,8 vcf.info) <(bedtools getfasta -fi $1 -bed ref.bed | awk 'getline seq {print seq}') <(cut -f 10-12 vcf.info) <(awk '{print $13";"$4}' vcf.info) <(cut -f 14- vcf.info) > vcf.body
+paste <(cut -f 2,3,8 vcf.info) <(bedtools getfasta -fi $1 -bed ref.bed | awk 'getline seq {print seq}') <(cut -f 10-12 vcf.info) <(awk '{print $13";"$4}' vcf.info) <(cut -f 14- vcf.info) | sort -k1,1 -k2,2n > vcf.body
 # ammend the header
 grep '^##' TypeREF.merged.genotypes.vcf > pre.header
 echo "##INFO=<ID=END,Number=1,Type=Integer,Description=\"End position of the variant described in this record\">" >> pre.header
