@@ -1,6 +1,6 @@
 
 #! /bin/bash
-# usage: ./makevcf.sh <ref_genome>
+# usage: ./makevcf.sh <ref_genome> <TypeREF_version>
 # so far produces a 4 column table with:
 # c1 = locus name format chr_position (should match between RM_ and vcf c1_c2)
 # c2 = chr
@@ -21,5 +21,5 @@ echo "##INFO=<ID=TSD,Number=1,Type=String,Description=\"Target Site Duplication\
 echo "##INFO=<ID=MEINFO,Number=4,Type=String,Description=\"Mobile element info of the form NAME,START,END,POLARITY\">" >> pre.header
 
 # and merge everything
-cat <(head -n 1 pre.header) <(echo "##fileDate="$(date "+%Y%m%d")) <(echo "##fileDate="$1) <(awk 'NR > 1' pre.header) <(grep -w '#CHROM' TypeREF.merged.genotypes.vcf) vcf.body
+cat <(head -n 1 pre.header) <(echo "##fileDate="$(date "+%Y%m%d")) <(echo "##reference="$1) <(echo "##source=TypeREF.v"$2) <(awk 'NR > 1' pre.header) <(grep -w '#CHROM' TypeREF.merged.genotypes.vcf) vcf.body
 

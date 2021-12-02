@@ -277,11 +277,11 @@ process mergeVcfs {
   output:
   file "TypeREF.merged.genotypes.vcf" into typeref_outputs
   file "TypeREF.final.genotypes.vcf" into typeref_outputs_2
-  
+
   script:
   """
   vcf-merge *.vcf.gz > TypeREF.merged.genotypes.vcf
-  makevcf.sh $ref > TypeREF.final.genotypes.vcf
+  makevcf.sh $ref ${params.version} > TypeREF.final.genotypes.vcf
   """
   }
 
