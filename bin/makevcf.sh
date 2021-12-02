@@ -22,4 +22,3 @@ echo "##INFO=<ID=MEINFO,Number=4,Type=String,Description=\"Mobile element info o
 
 # and merge everything
 cat <(head -n 1 pre.header) <(echo "##fileDate="$(date "+%Y%m%d")) <(echo "##reference="$1) <(echo "##source=TypeREF.v"$2) <(awk 'NR > 1' pre.header) <(grep -w '#CHROM' TypeREF.merged.genotypes.vcf) vcf.body
-
