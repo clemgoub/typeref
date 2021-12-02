@@ -96,6 +96,7 @@ else
 ref_TSD           =   Channel.fromPath(params.ref)
 ref_genoinput     =   Channel.fromPath(params.ref)
 ref_geno_gen_ch   =   Channel.fromPath(params.ref)
+ref_vcf_ch        =   Channel.fromPath(params.ref)
 // load insertion-genotype submodules into dedicated channels
 insgen_prep_ch    =   Channel.fromPath( './bin/insertion-genotype/' )
 insgen_gen_ch     =   Channel.fromPath( './bin/insertion-genotype/' )
@@ -188,6 +189,7 @@ process createAlleles {
 
   output:
   file "RM_insertions_TSD_strands" into interm_ch
+  file "RM_insertions_TSD_strands" into RM_ins_vcf_channel
   file "TypeREF.allele" into input_Geno_ch_1
   file "TypeREF.allele" into input_Geno_ch_2
   file "*.fai" into index_ch
@@ -269,6 +271,8 @@ process mergeVcfs {
 
   input:
   file vcfFile from indexed_vcfs.collect()
+  file ref from ref_vcf_ch
+  file "RM_insertions_TSD_strands" from RM_ins_vcf_channel
    
   output:
   file "TypeREF.merged.genotypes.vcf" into typeref_outputs
@@ -276,6 +280,7 @@ process mergeVcfs {
   script:
   """
   vcf-merge *.vcf.gz > TypeREF.merged.genotypes.vcf
+  makevcf.sh $ref > TypeREF.final.genotypes.vcf
   """
   }
 

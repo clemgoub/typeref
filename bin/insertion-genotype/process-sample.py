@@ -444,8 +444,8 @@ outVCF.write('##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth (onl
 outVCF.write('##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">\n')
 outVCF.write('##FORMAT=<ID=GQ,Number=1,Type=Float,Description="Genotype Quality">\n')
 outVCF.write('##FORMAT=<ID=PL,Number=3,Type=Float,Description="Normalized, Phred-scaled likelihoods for AA,AB,BB genotypes where A=ref and B=alt">\n')
-outVCF.write('##REF=<ID=INS:ME,Description="Insertion of Mobile Element">\n')
-outVCF.write('##ALT=<ID=CN:0,Description="Copy Number is 0 for the ME insertion">\n')
+#outVCF.write('##REF=<ID=INS:ME,Description="Insertion of Mobile Element">\n')
+outVCF.write('##ALT=<ID=DEL:ME,Description="Deletion of mobile element relative to the reference">\n')
 outVCF.write('##INFO=<ID=DP,Number=1,Type=Integer,Description="Filtered Depth">\n')
 header = ['#CHROM','POS','ID','REF','ALT','QUAL','FILTER','INFO','FORMAT']
 
@@ -489,7 +489,7 @@ for line in inFile:
     siteID = line[0]
     # put in 'N' for ref... not right, but ok for now?
     # also <MEI> isn't exaclt right
-    nl = [siteIDToPos[siteID][0],siteIDToPos[siteID][1],siteID,'<INS:ME>','<CN:0>','.','.']
+    nl = [siteIDToPos[siteID][0],siteIDToPos[siteID][1],siteID,'.','<DEL:ME>','.','.']
     totDepth = int(line[2])
     i = 'DP=%i' % totDepth
     i += ';' + alleleSeqs[siteID]
