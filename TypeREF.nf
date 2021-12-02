@@ -239,7 +239,7 @@ process insgen_genotype {
   file "alignments" from alignPath_ch.toList()
   file "ref" from ref_geno_gen_ch.toList()
   file "*.fai" from index_ch.toList()
-  file "exclusion.bed" from exclusion_ch
+  file "exclusion.bed" from exclusion_ch.toList()
 
   output:
   // file "genotyping/samples/${sampleId}/*.vcf.gz" into indexed_vcfs
