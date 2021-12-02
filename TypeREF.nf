@@ -276,6 +276,7 @@ process mergeVcfs {
    
   output:
   file "TypeREF.merged.genotypes.vcf" into typeref_outputs
+  file "TypeREF.final.genotypes.vcf" into typeref_outputs_2
   
   script:
   """
