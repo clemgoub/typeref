@@ -13,6 +13,7 @@ params.help		      =	  null
 params.ref          =   null
 params.aln_path     =   null
 params.aln_samples  =   null
+params.maxr         =   10
 // params.cpu          =   1
 params.version      =   "0.0-dev"
 
@@ -60,6 +61,9 @@ if (params.help) {
                   ex: sampleId fileId
                       NA12878  NA12878.project.blah.bam
                       NA12831  NA12831.project.blah.bam
+  --maxr          maximum number of fragments mapping to each allele (cap to avoid ref allele inflation
+  )
+
   Output:
   --outdir        output directory to store results
   
@@ -100,6 +104,8 @@ ref_vcf_ch        =   Channel.fromPath(params.ref)
 // load insertion-genotype submodules into dedicated channels
 insgen_prep_ch    =   Channel.fromPath( './bin/insertion-genotype/' )
 insgen_gen_ch     =   Channel.fromPath( './bin/insertion-genotype/' )
+// put maxreads in its channel
+insgen_maxr        =   Channel.fromPath(params.maxr)
 
 // ----------------------------------------
 // STEP 1
@@ -240,6 +246,7 @@ process insgen_genotype {
   file "ref" from ref_geno_gen_ch.toList()
   file "*.fai" from index_ch.toList()
   file "exclusion.bed" from exclusion_ch.toList()
+  val maxr from insgen_maxr.toList()
 
   output:
   // file "genotyping/samples/${sampleId}/*.vcf.gz" into indexed_vcfs
@@ -253,7 +260,7 @@ process insgen_genotype {
     mkdir -p genotyping
     cp -r ./genotyping[0-9]*/* ./genotyping/
   fi
-  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref --excludefile exclusion.bed 
+  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref --excludefile exclusion.bed --maxreads ${maxr}
   bgzip -c genotyping/samples/${sampleId}/${sampleId}.vcf > ${sampleId}.vcf.gz
   tabix -p vcf ${sampleId}.vcf.gz
   """

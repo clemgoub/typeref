@@ -49,8 +49,6 @@ parser.add_option('--samplename',dest='sampleName', help = 'sample name')
 parser.add_option('--bam',dest='bam', help = 'bam of sample')
 parser.add_option('--excludefile',dest='excludeFile', help = 'file of coordinates to exclude contained mappings')
 parser.add_option('--reference',dest='referenceFile', help = 'reference file needed for CRAM support')
-# add option for max reads per allele | 12-07-21 CG
-parser.add_option('--maxreads',dest='maxr', help = 'cap for the maximum nubmber of fragments to keep per allele')
 
 
 
@@ -79,8 +77,6 @@ myData = {}
 myData['bwa'] = options.bwa
 myData['sampleName'] = options.sampleName
 myData['bam'] = options.bam
-# add option for max reads per allele | 12-07-21 CG
-myData['maxr'] = options.maxr
 myData['alleleBase'] = options.alleleBase
 if myData['alleleBase'][-1] != '/' :
     myData['alleleBase'] += '/'

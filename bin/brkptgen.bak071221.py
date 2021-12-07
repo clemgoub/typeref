@@ -454,7 +454,7 @@ def process_read_hits(r1,r2,myData):
     return True    
 ###############################################################################
 # functions for dealing with genotype likelihoods...
-def read_samsel_hits(siteData, myData):
+def read_samsel_hits(siteData):
    inFile = open(siteData['outSamSel'],'r')
    siteData['refQuals'] = []
    siteData['altQuals'] = []
@@ -501,8 +501,7 @@ def read_samsel_hits(siteData, myData):
    # we will impose a max number of reads to prevent underflow issues
    # this tends to happen at cases where we have duplication/centromere stuff
    # going on anyway
-   # add option for max reads per allele | 12-07-21 CG
-   maxReads = myData['maxr']
+   maxReads = 200
    if len(siteData['refErrorProbs']) > maxReads:
        siteData['refErrorProbs'] = siteData['refErrorProbs'][0:maxReads]
        print 'trimmed down ref counts to',len(siteData['refErrorProbs'])
