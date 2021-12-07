@@ -61,8 +61,7 @@ if (params.help) {
                   ex: sampleId fileId
                       NA12878  NA12878.project.blah.bam
                       NA12831  NA12831.project.blah.bam
-  --maxr          maximum number of fragments mapping to each allele (cap to avoid ref allele inflation
-  )
+  --maxr          maximum number of fragments mapping to each allele (cap to avoid ref allele inflation)
 
   Output:
   --outdir        output directory to store results
@@ -246,7 +245,7 @@ process insgen_genotype {
   file "ref" from ref_geno_gen_ch.toList()
   file "*.fai" from index_ch.toList()
   file "exclusion.bed" from exclusion_ch.toList()
-  val maxr from insgen_maxr.toList()
+  //val maxr from insgen_maxr.toList()
 
   output:
   // file "genotyping/samples/${sampleId}/*.vcf.gz" into indexed_vcfs
@@ -260,7 +259,7 @@ process insgen_genotype {
     mkdir -p genotyping
     cp -r ./genotyping[0-9]*/* ./genotyping/
   fi
-  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref --excludefile exclusion.bed --maxreads maxr
+  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref --excludefile exclusion.bed --maxreads ${params.maxr}
   bgzip -c genotyping/samples/${sampleId}/${sampleId}.vcf > ${sampleId}.vcf.gz
   tabix -p vcf ${sampleId}.vcf.gz
   """
