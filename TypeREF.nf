@@ -260,7 +260,7 @@ process insgen_genotype {
     mkdir -p genotyping
     cp -r ./genotyping[0-9]*/* ./genotyping/
   fi
-  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref --excludefile exclusion.bed --maxreads ${maxr}
+  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref --excludefile exclusion.bed --maxreads maxr
   bgzip -c genotyping/samples/${sampleId}/${sampleId}.vcf > ${sampleId}.vcf.gz
   tabix -p vcf ${sampleId}.vcf.gz
   """
