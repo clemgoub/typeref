@@ -409,7 +409,7 @@ for siteInterval in myData['siteIntervals']:
     siteData['outSamSel'] = siteData['outSAM'] + '.filter.sel.sam'
 
 
-    brkptgen.read_samsel_hits(siteData)
+    brkptgen.read_samsel_hits(siteData, myData)
     brkptgen.calc_gen_likelihood(siteData)
         
 
