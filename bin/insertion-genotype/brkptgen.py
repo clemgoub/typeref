@@ -502,7 +502,7 @@ def read_samsel_hits(siteData, myData):
    # this tends to happen at cases where we have duplication/centromere stuff
    # going on anyway
    # add option for max reads per allele | 12-07-21 CG
-   maxReads = myData['maxr']
+   maxReads = int(myData['maxr'])
    if len(siteData['refErrorProbs']) > maxReads:
        siteData['refErrorProbs'] = siteData['refErrorProbs'][0:maxReads]
        print 'trimmed down ref counts to',len(siteData['refErrorProbs'])
@@ -510,7 +510,6 @@ def read_samsel_hits(siteData, myData):
    if len(siteData['altErrorProbs']) > maxReads:
        siteData['altErrorProbs'] = siteData['altErrorProbs'][0:maxReads]
        print 'trimmed down alt counts to',len(siteData['altErrorProbs'])
-
 
    siteData['numRefFrag'] = len(siteData['refErrorProbs'])
    siteData['numAltFrag'] = len(siteData['altErrorProbs'])
