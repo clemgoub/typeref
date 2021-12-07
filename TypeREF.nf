@@ -105,7 +105,7 @@ ref_vcf_ch        =   Channel.fromPath(params.ref)
 insgen_prep_ch    =   Channel.fromPath( './bin/insertion-genotype/' )
 insgen_gen_ch     =   Channel.fromPath( './bin/insertion-genotype/' )
 // put maxreads in its channel
-insgen_maxr        =   Channel.fromPath(params.maxr)
+insgen_maxr       =   Channel.value(params.maxr)
 
 // ----------------------------------------
 // STEP 1
