@@ -121,7 +121,9 @@ process parse_input {
 
   output:
   file "infile" into TypeDEL_in // will output in new channel TypeDEL_in
+  file "infile" into rescue_in // copy for process 3 (TSD) rescue (those who are not processed by step 3)
   file "input_loci_correspondance" into cor_ch
+  file "input_loci_correspondance" into rescue_cor
 
   script:
   """
@@ -168,6 +170,8 @@ process findTSDs {
   input:
   file "file.correspondingRepeatMaskerTEs.txt" from RM_refTSD 
   file ref from ref_TSD
+  //file "infile" from rescue_in
+  //file "input_loci_correspondance" from rescue_cor
 
   output:
   file "output_TSD_Intervals.out" into TSD // TSD channel to host the output file
@@ -191,6 +195,8 @@ process createAlleles {
   file "output_TSD_Intervals.out" from TSD
   file "file.correspondingRepeatMaskerTEs.txt" from RM_inGeno
   file ref from ref_genoinput
+  file "infile" from rescue_in
+  file "input_loci_correspondance" from rescue_cor
 
   output:
   file "RM_insertions_TSD_strands" into interm_ch
@@ -203,6 +209,7 @@ process createAlleles {
   shell:
   """
   join -11 -21 <(sort -k1,1 output_TSD_Intervals.out/TEcordinates_with_bothtsd_cordinates.v.3.4.txt) <(sort -k1,1 file.correspondingRepeatMaskerTEs.txt) | sed 's/ /\t/g' | awk '{print \$1"\t"\$2"\t"\$3"\t"\$4"\t"\$10"\t"\$8}' > RM_insertions_TSD_strands
+  grep -wf <(grep -vwf <(cut -f 1 RM_insertions_TSD_strands) infile | cut -f 1) <(awk '{print \$7"_"\$8"\t"\$0}' input_loci_correspondance) | awk '{print \$1"\t"\$8":"\$9"-"\$10"\t"\$8":"\$9"-"\$10"\tnoTSDs\t"\$13"\t"\$11}' >> RM_insertions_TSD_strands
   samtools faidx $ref
   deletion_create_input.sh RM_insertions_TSD_strands $ref > TypeREF.allele
   awk '{print \$1}' TypeREF.allele | sed 's/:/\t/g;s/-/\t/g' | awk '{print \$1":"\$2"-"\$3"_genome\t500\t"500+(\$3-\$2)}' > exclusion.bed
