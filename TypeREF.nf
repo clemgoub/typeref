@@ -245,7 +245,7 @@ process insgen_indexAlleles {
 process insgen_gatherloc {
 
   input:
-  file "genotyping" from allelebase_ch
+  file "genotyping" from allelebase_ch.collect()
  
   output:
   // file "genotyping/samples/${sampleId}/*.vcf.gz" into indexed_vcfs
@@ -255,9 +255,11 @@ process insgen_gatherloc {
   // check if we have multiple genotyping folder by searching for "genotyping1" -- otherwise folder is called "genotyping"
   // if multiple genotyping folders, make a new "genotyping" folder and copy the content of the different folders into it
   """
+  mkdir -p allelebase
   if [[ -d ./genotyping1 ]]; then
-    mkdir -p allelebase
     cp -r ./genotyping[0-9]*/* ./allelebase/
+    else
+    cp -r ./genotyping/* ./allelebase/
   fi
   """
   }
