@@ -227,7 +227,7 @@ process insgen_indexAlleles {
   file "TypeREF.allele" from input_Geno_ch_1.splitText( by: 8 )
  
   output:
-  file genotyping into allelebase_ch
+  file "genotyping" into allelebase_ch
 
   script:
   """
@@ -237,8 +237,33 @@ process insgen_indexAlleles {
   
   }
 
+//----------------------------------
+// STEP 6 
+// Gather loci in a genotype folder
+//----------------------------------
+
+process insgen_gatherloc {
+
+  input:
+  file "genotyping" from allelebase_ch
+ 
+  output:
+  // file "genotyping/samples/${sampleId}/*.vcf.gz" into indexed_vcfs
+  file "genotyping" into gathered_loc
+
+  script:
+  // check if we have multiple genotyping folder by searching for "genotyping1" -- otherwise folder is called "genotyping"
+  // if multiple genotyping folders, make a new "genotyping" folder and copy the content of the different folders into it
+  """
+  if [[ -d ./genotyping1 ]]; then
+    mkdir -p genotyping
+    cp -r ./genotyping[0-9]*/* ./genotyping/
+  fi
+  """
+  }
+
 //--------------------------------------
-// STEP 6 - (sub: INSERTION-GENOTYPE 2/2)
+// STEP 7 - (sub: INSERTION-GENOTYPE 2/2)
 // GENOTYPE!!!!!!!
 //--------------------------------------
 
@@ -247,7 +272,7 @@ process insgen_genotype {
   input:
   set sampleId, file(fileId) from alignSamples_ch
   file "TypeREF.allele" from input_Geno_ch_2.toList()
-  file "genotyping" from allelebase_ch.toList()
+  file "genotyping" from gathered_loc.toList()
   file "alignments" from alignPath_ch.toList()
   file "ref" from ref_geno_gen_ch.toList()
   file "*.fai" from index_ch.toList()
@@ -262,10 +287,6 @@ process insgen_genotype {
   // check if we have multiple genotyping folder by searching for "genotyping1" -- otherwise folder is called "genotyping"
   // if multiple genotyping folders, make a new "genotyping" folder and copy the content of the different folders into it
   """
-  if [[ -d ./genotyping1 ]]; then
-    mkdir -p genotyping
-    cp -r ./genotyping[0-9]*/* ./genotyping/
-  fi
   python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref --excludefile exclusion.bed --maxreads ${params.maxr}
   bgzip -c genotyping/samples/${sampleId}/${sampleId}.vcf > ${sampleId}.vcf.gz
   tabix -p vcf ${sampleId}.vcf.gz
@@ -274,7 +295,7 @@ process insgen_genotype {
 
 
 //--------------------------------------
-// STEP 7
+// STEP 8
 // Merge vcfs
 //--------------------------------------
 
