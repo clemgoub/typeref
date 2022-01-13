@@ -249,15 +249,15 @@ process insgen_gatherloc {
  
   output:
   // file "genotyping/samples/${sampleId}/*.vcf.gz" into indexed_vcfs
-  file "genotyping" into gathered_loc
+  file "allelebase" into gathered_loc
 
   script:
   // check if we have multiple genotyping folder by searching for "genotyping1" -- otherwise folder is called "genotyping"
   // if multiple genotyping folders, make a new "genotyping" folder and copy the content of the different folders into it
   """
   if [[ -d ./genotyping1 ]]; then
-    mkdir -p genotyping
-    cp -r ./genotyping[0-9]*/* ./genotyping/
+    mkdir -p allelebase
+    cp -r ./genotyping[0-9]*/* ./allelebase/
   fi
   """
   }
@@ -272,7 +272,7 @@ process insgen_genotype {
   input:
   set sampleId, file(fileId) from alignSamples_ch
   file "TypeREF.allele" from input_Geno_ch_2.toList()
-  file "genotyping" from gathered_loc.toList()
+  file "allelebase" from gathered_loc.toList()
   file "alignments" from alignPath_ch.toList()
   file "ref" from ref_geno_gen_ch.toList()
   file "*.fai" from index_ch.toList()
@@ -284,10 +284,8 @@ process insgen_genotype {
   file "*.vcf.gz*" into indexed_vcfs
 
   script:
-  // check if we have multiple genotyping folder by searching for "genotyping1" -- otherwise folder is called "genotyping"
-  // if multiple genotyping folders, make a new "genotyping" folder and copy the content of the different folders into it
   """
-  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase genotyping --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref --excludefile exclusion.bed --maxreads ${params.maxr}
+  python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase allelebase --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref --excludefile exclusion.bed --maxreads ${params.maxr}
   bgzip -c genotyping/samples/${sampleId}/${sampleId}.vcf > ${sampleId}.vcf.gz
   tabix -p vcf ${sampleId}.vcf.gz
   """
