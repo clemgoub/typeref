@@ -288,7 +288,7 @@ process insgen_genotype {
   script:
   """
   python2.7 $workflow.projectDir/bin/insertion-genotype/process-sample.py --allelefile TypeREF.allele --allelebase allelebase --samplename ${sampleId} --bwa bwa --bam alignments/${fileId} --reference ref --excludefile exclusion.bed --maxreads ${params.maxr}
-  bgzip -c genotyping/samples/${sampleId}/${sampleId}.vcf > ${sampleId}.vcf.gz
+  bgzip -c allelebase/samples/${sampleId}/${sampleId}.vcf > ${sampleId}.vcf.gz
   tabix -p vcf ${sampleId}.vcf.gz
   """
   }
