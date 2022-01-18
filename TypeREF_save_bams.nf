@@ -310,7 +310,7 @@ process exportBams {
     // create a channel to export the allelebase folder to a new channel + use .toList() to have it for each individual 
 
     output:
-    file "*.bams.tar.gz" to TR_bams_ch
+    file "*.bams.tar.gz" into TR_bams_ch
 
     when:
     params.exportBams // add params.exportBams on top
