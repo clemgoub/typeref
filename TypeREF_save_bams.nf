@@ -290,7 +290,7 @@ process insgen_genotype {
   output:
   // file "genotyping/samples/${sampleId}/*.vcf.gz" into indexed_vcfs
   file "*.vcf.gz*" into indexed_vcfs
-  file "allelebase" to export_ch
+  file "allelebase" into export_ch
 
   script:
   """
