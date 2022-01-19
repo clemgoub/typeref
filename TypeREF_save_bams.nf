@@ -96,7 +96,7 @@ alignSamples_ch   =   Channel
 alignSamples_ch2   =   Channel
                             .fromPath(params.aln_samples)
                             .splitCsv(sep: '\t', header:true)
-                            .map { row -> tuple(row.sampleId, file(row.fileId)) }                            
+                            .map { row -> value(row.sampleId) }                            
 if ( params.meltvcf != null )
      in_ch = Channel.fromPath(params.meltvcf)
 else
