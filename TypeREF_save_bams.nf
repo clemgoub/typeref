@@ -316,7 +316,7 @@ process exportBams {
     params.exportBams // add params.exportBams on top
 
     """
-    tar -czhvf ${sampleId}.bams.tar.gz allelebase/samples/${sampleID}/mapping
+    tar -czhvf ${sampleId}.bams.tar.gz allelebase/samples/${sampleId}/mapping
     """
 }
 
