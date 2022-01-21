@@ -305,7 +305,7 @@ process exportBams {
 
     input:
     set sampleId from alignSamples_ch2
-    file "allelebase" from export_ch.toList()
+    file "allelebase" from export_ch
     // create a channel to duplicate sampleID from alignSamples_ch
     // create a channel to export the allelebase folder to a new channel + use .toList() to have it for each individual 
 
