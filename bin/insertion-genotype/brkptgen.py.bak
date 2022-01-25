@@ -340,27 +340,26 @@ def align_to_alts_bwa(myData,siteData):
 
 
     # hard coded in -- this is for BWA-mem
-    # Change 01/25/22 - C. Goubert: run bwa mem by default instead of bwa aln
-    # if False:
-    cmd = myData['bwa'] + ' mem ' +  siteData['targetFA'] + ' ' + siteData['fq1'] + ' ' + siteData['fq2'] + ' > ' + siteData['outSAM']
-    print cmd
-    runCMD(cmd)
-    # else:
-    #     sai1 = siteData['fq1'] + '.sai'
-    #     cmd = myData['bwa'] + ' aln -q 15 ' + siteData['targetFA'] + ' ' + siteData['fq1'] + ' > ' + sai1
-    #     print cmd
-    #     runCMD(cmd)
-    #     sai2 = siteData['fq2'] + '.sai'
-    #     cmd = myData['bwa'] + ' aln -q 15 ' + siteData['targetFA'] + ' ' + siteData['fq2'] + ' > ' + sai2
-    #     print cmd
-    #     runCMD(cmd)
+    if False:
+        cmd = myData['bwa'] + ' mem  -I 400,40,900,100 -M  ' +  siteData['targetFA'] + ' ' + siteData['fq1'] + ' ' + siteData['fq2'] + ' > ' + siteData['outSAM']
+        print cmd
+        runCMD(cmd)
+    else:
+        sai1 = siteData['fq1'] + '.sai'
+        cmd = myData['bwa'] + ' aln -q 15 ' + siteData['targetFA'] + ' ' + siteData['fq1'] + ' > ' + sai1
+        print cmd
+        runCMD(cmd)
+        sai2 = siteData['fq2'] + '.sai'
+        cmd = myData['bwa'] + ' aln -q 15 ' + siteData['targetFA'] + ' ' + siteData['fq2'] + ' > ' + sai2
+        print cmd
+        runCMD(cmd)
         
 #        cmd = myData['bwa'] + ' sampe -A ' + siteData['targetFA'] + ' ' + sai1 + ' ' + sai2 + ' ' + siteData['fq1'] + ' ' + siteData['fq2'] + '> ' + siteData['outSAM']
 # test of a = 1000 for larger insert sizes.....
-        # cmd = myData['bwa'] + ' sampe -a 1000 -A ' + siteData['targetFA'] + ' ' + sai1 + ' ' + sai2 + ' ' + siteData['fq1'] + ' ' + siteData['fq2'] + '> ' + siteData['outSAM']
+        cmd = myData['bwa'] + ' sampe -a 1000 -A ' + siteData['targetFA'] + ' ' + sai1 + ' ' + sai2 + ' ' + siteData['fq1'] + ' ' + siteData['fq2'] + '> ' + siteData['outSAM']
 
-        # print cmd
-        # runCMD(cmd)
+        print cmd
+        runCMD(cmd)
                         
         
     select_hits_from_sam(siteData,myData)
