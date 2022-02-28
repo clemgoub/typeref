@@ -5,7 +5,7 @@
 
 ## Overview 
 
-TypeREF is a program to genotype "reference" mobile elements insertions, namely **AluY**, **LINE1** and **SVA** retrotransposons. The workflow for Alu is identical to [TypeTE-Reference](https://github.com/clemgoub/TypeTE), however this new version has been wrapped into a [Nextflow](https://www.nextflow.io/) package and uses a container (Docker/Singularity) in order to ease its installation.
+TypeREF is a program to genotype **"reference"** mobile elements insertions, namely **AluY**, **LINE1** and **SVA** retrotransposons present in a reference build. The workflow for Alu is identical to [TypeTE-Reference](https://github.com/clemgoub/TypeTE), however this new version has been wrapped into a [Nextflow](https://www.nextflow.io/) package and uses a container (Docker/Singularity) in order to ease its installation.
 
 The principal use of TypeREF is to correct the genotypes of reference Alu polymorphism detected by [MELT2](https://melt.igs.umaryland.edu/). We also implemented the genotyping of candidate LINE1 and SVA elements, however please consult the benchmark section before use.
 
