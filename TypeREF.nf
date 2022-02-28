@@ -15,7 +15,7 @@ params.aln_path     =   null
 params.aln_samples  =   null
 params.maxr         =   10
 // params.cpu          =   1
-params.version      =   "0.0-dev"
+params.version      =   "1.0"
 
 
 // SAY HELLO
@@ -62,12 +62,14 @@ if (params.help) {
                       NA12878  NA12878.project.blah.bam
                       NA12831  NA12831.project.blah.bam
   --maxr          maximum number of fragments mapping to each allele (cap to avoid ref allele inflation)
+                  for Alu: --maxr 10 (default)
+                  for LINE1 and SVA --maxr 1 is recommended
 
   Output:
   --outdir        output directory to store results
   
   Options:
-  --TE            TE type to be genotyped: Alu | L1 | SVA (default: Alu)
+  --TE            TE type to be genotyped: Alu (default) | L1 | SVA 
   --help          this message
   """
   exit 1

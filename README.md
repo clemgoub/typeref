@@ -1,27 +1,18 @@
-[![status](https://img.shields.io/badge/status:-dev-red)]() [![status: support](https://img.shields.io/badge/support:-no-red)]()
+[![status](https://img.shields.io/badge/status:-v1.0-green)]() [![status: support](https://img.shields.io/badge/support:-yes-green)]()
 
-🏗️ PROJECT UNDER DEVELOPMENT 🚧
-- Migration of Type-TE to Nextflow pipeline
-- Reference insertions only (see MELT2 and xTEA for non-reference insertions)
-- Alu, L1 and SVA genotyping
-
-# TypeREF Manual (dev version)
+# TypeREF Manual
 ###### tags: `TypeREF` `Documentation`
 
-## Warning
-This version is under active developments. Results can be incorrect and some feature not working.
-- Alu: OK (same as TypeTE-del)
-- LINE1 and SVA: OK to test (**not benchmarked**)
-
 ## Overview 
-TypeREF is a program to genotype "reference" mobile elements insertions, namely **AluY**, **LINE1** and **SVA** retrotransposons.
 
-For genotyping of non-reference insertions see [MELT2](https://melt.igs.umaryland.edu) or [xTEA](https://github.com/parklab/xTea).
-For Endogeneous Retrovirus polymorphism see: [RetroSeq](https://github.com/tk2/RetroSeq), [ERVcaller](https://academic.oup.com/bioinformatics/article/35/20/3913/5416145?login=true) and [dimorphicERV](https://github.com/jainy/dimorphicERV)
+TypeREF is a program to genotype "reference" mobile elements insertions, namely **AluY**, **LINE1** and **SVA** retrotransposons. The workflow for Alu is identical to [TypeTE-Reference](https://github.com/clemgoub/TypeTE), however this new version has been wrapped into a [Nextflow](https://www.nextflow.io/) package and uses a container (Docker/Singularity) in order to ease its installation.
 
-![](https://i.imgur.com/AyeSv8x.png)
+The principal use of TypeREF is to correct the genotypes of reference Alu polymorphism detected by [MELT2](https://melt.igs.umaryland.edu/). We also implemented the genotyping of candidate LINE1 and SVA elements, however please consult the benchmark section before use.
 
-## Install
+>For genotyping of non-reference TE insertions see [MELT2](https://melt.igs.umaryland.edu), [ERVcaller](https://academic.oup.com/bioinformatics/article/35/20/3913/5416145?login=true) or [xTEA](https://github.com/parklab/xTea). For dimorphic Endogeneous Retrovirus polymorphisms see [dimorphicERV](https://github.com/jainy/dimorphicERV).
+
+
+## Installation
 
 ### 1. Clone TypeREF repos
 
@@ -31,30 +22,39 @@ The Type-REF project is hosted on github and is available for download
 git clone https://github.com/clemgoub/typeref.git
 ```
 
-### 2. Build the Singularity image
+### 2 Container configuration
 
-With every update of the `Dockerfile`, a new `docker` image is pushed to [Docker-hub](https://hub.docker.com/r/clemgoub/typeref). This way, the `docker` image can directly downloaded and converted to a `singularity` image for rootless users (such as Calcul Canada [CC]) and cannot use `docker`.
+#### 2.1 Using Singularity (non-root userts)
+
+With every update of the `Dockerfile`, a new `docker` image is pushed to [Docker-hub](https://hub.docker.com/r/clemgoub/typeref). This way, the `docker` image can be directly downloaded and converted to a `singularity` image for rootless users (such as Calcul Canada [CC]) and cannot use `docker`.
 
 ```shell=
 singularity pull --name clemgoub-typeref-latest.img docker://clemgoub/typeref:latest
 ```
 > *building the image with `singularity pull` is slow, but only required once*
 
-### 3. Configure Nextflow
-
-Open and mofify the `nextflow.config` file, located in the `TypeREF` repository as follow:
+Next, open and mofify the `nextflow.config` file, located in the `TypeREF` repository as follow:
 
 ```
 singularity.enabled = true
 process.container = '<your-path>/clemgoub-typeref-latest.img'
 singularity.autoMounts = true
 ```
+> If the number of available cpu cannot be chosen via a scheduler, the line `cpus =  N` can be added
+
+#### 2.2 Using Docker (root users)
+
+To use TypeREF with Docker, simply add `-with-docker clemgoub/typeref:latest` or modify the file `config.nextflow` as follow:
+```
+process.container = 'clemgoub/typeref:latest'
+docker.enabled = true
+```
 
 ## Running TypeREF
 
 ### 1. Input files
 
-- **vcf**, for example from MELT "deletion" OR **bed** file with Reference TE coordinates `--meltvcf`/`--bed`
+- a **VCF**, for example from MELT "deletion" OR a **bed** file with Reference TE coordinates `--meltvcf`/`--bed`
 
     #### Example 1: `.vcf`
 
@@ -117,6 +117,7 @@ RepeatMasker tracks for Alu, L1 and SVA are available for hg19 and hg38 in the f
 - memory: **<1Gb** per cpu
 
 ### 3. Command line arguments
+
 ```
 Input:
   --meltvcf       vcf/vcf.gz file preduced by MELT-DEL pipeline (Deletion-Merge command)
@@ -131,46 +132,43 @@ Input:
   --aln_samples   two columns (tab delimited) with samples ID in column 1 and associated samples file names (.bam/.cram) in column 2. 
                   ex: NA12878  NA12878.project.blah.bam
                       NA12831  NA12831.project.blah.bam
+  --maxr          maximum number of fragments mapping to each allele (cap to avoid ref allele inflation)
+                  for Alu: --maxr 10 (default)
+                  for LINE1 and SVA --maxr 1 is recommended
+
 Output:
   --outdir        output directory to store results
   
 Options:
-  --TE            TE type to be genotyped: Alu | SVA | LINE1[not tested] (default: Alu)
+  --TE            TE type to be genotyped: Alu (default) | SVA | LINE1
   --help          this message
 ```
 
 ## Tips / Known Issues
 
-The following lists the most common sources of error. For a complete status of the current and fixed bugs, [please read here](https://hackmd.io/AHbY8ms-Taeb0q0T920Flg?view).
-
-- Nextflow and Singularity modules need to be loaded
-- Use the exact *same reference genome* as used for read alignments
+- On HPC, Nextflow and Singularity modules need to be loaded
+- Use the exact *same reference genome* as used for read alignments in order to avoid errors
 - Input only loci of one type of TE at a time (Alu, SVA or L1)
-- Check and resolve duplicated coordinates for a given TE type in the input bed or vcf (two distinct insertions can't share the same coordinates)
-   - example (coordinates from MELT2):
-   ```
-   chr1	74897	76697	L1MC5a   LINE/L1	+
-   chr1	74897	76697	L1PA2 LINE/L1	+
-   ```
-   - since they have the same coordinates, **pick one or the other**. TypeREF will update the annotation using our curated reference TE track.
-   ```
-   chr1	73845	76697	L1PA2.5INV.L1PA2	.	+
-   ```
-   > *In this case this locus is a L1PA2 with a 5' inversion and was splitted in two distinct intervals in the original TE track.*
-- Check that your input (vcf of bed) has the same contig/chromosome names the same format than the refernce genome. Most frequent error is the presence or not of the string `chr` between versions. Provided repeat tracks are compatible with both formats.
-- Keep the input data and the singularity image outside of the local `/typeref` repository directory.
-  ```
-  .
-  └─ Project/
-     └─── typeref/ (repos)
-     └─── data/ (includes alignments, ref genome, input coordinates, file list of sample to process)
-     └─── singularity_image/ (container for TypeREF)
-     └─── output_folder/
-  ```
-- Erasing the `work/` folder produced by Nextflow can resolve some issues
-- An interupted job can be resumed if the `work` folder is saved. Use the `-resume` option (only one `-`)
+- Please address you issues using the "issue" tab at the top of this page! Thank you!
 
+## Benchmark of TypeREF with HG002/Genome in a Bottle (GIAB)
 
-## Notes
+A benchmark of TypeREF has been conducted using a list of 943 Alu, 103 LINE1 and 12 SVA present in the reference build hg19 and for which HG002 shows polymorphism in the [GIAB SV benchmark](https://www.nature.com/articles/s41587-020-0538-8). Additionaly, 1000 Alu, LINE1 and SVA, not labelled as polymorphic by in HG002 by GIAB, were randomly selected to estimate the false positive rate. The results of TypeREF are compared to the outputs of MELT2 "Deletion". 
 
-- Paralelized steps should automaticaly use all available CPUs, but this feature hasn't been tested yet
+The benchmark results are shown for two values of `--maxr`, 1 and 10. This parameter indicates the maximum number of fragments (properly alignmed read-pairs) supporting each allele (presence and absence). `--maxr 10` maximises the performances for Alu, while `--maxr 1` is best suited for LINE1 and SVA.
+
+### Definitions
+
+- Genotypes: according to the VCF format, 0 == TE presence == reference genome; 1 == TE absence == ALT
+- False positives: TypeREF calls 0/1 or 1/1 but the locus is not called by GIAB for HG002 
+- False negatives: TypeREF calls 0/0 but GIAB/HG002 is 0/1 or 1/1
+- "Matching genotypes": among the true positives, does the bi-allelic genotype match between TypeREF and GIAB ? (1/1 == 1/1 or 0/1 == 0/1)
+
+### `--maxr 10`: suited for Alu
+
+![ALU](https://i.imgur.com/A1NqZmC.png)
+
+### `--maxr 1`: suited for LINE1 and SVA
+
+![](https://i.imgur.com/CeK3ZiC.png)
+*Note that the amount of LINE1 and SVA is very low in comparison to Alu*
