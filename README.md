@@ -107,7 +107,7 @@ docker.enabled = true
 Location of the actual `.bam/.cram` and their indices (`.bai/.crai`) are located (path to folder).
 
 - **Repeat Masker track** (provided)
-RepeatMasker tracks for Alu, L1 and SVA are available for hg19 and hg38 in the folder `./typeref/Ressources/RepeatMasker_*_hg*.bed`
+RepeatMasker tracks for Alu, L1 and SVA are available for hg19 and hg38 in the folder `./typeref/Resources/RepeatMasker_*_hg*.bed`
 
 ### 2. Requirement
 
@@ -126,7 +126,7 @@ Input:
 
   --ref           reference genome used with the short-reads aligner (.fasta)
   --RM_track      RepeatMasker track for reference MEI (.bed) 
-                  note: RM track for hg19 and hg38 are available in the "Ressources" folder
+                  note: RM track for hg19 and hg38 are available in the "Resources" folder
   --aln_path      path to bam/cram directory (all samples need to be in the same directory however, 
                   the files to analyse will be only those in the aln_samples table)
   --aln_samples   two columns (tab delimited) with samples ID in column 1 and associated samples file names (.bam/.cram) in column 2. 

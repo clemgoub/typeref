@@ -6,7 +6,7 @@ date = new Date().format( 'yyyyMMdd' )
 // USER INPUT PARAMETERS
 params.meltvcf 	    = 	null
 params.bed          =   null
-params.RM_track     = 	null // Default RM track for hg19 and hg38 are available in the "Ressources" folder
+params.RM_track     = 	null // Default RM track for hg19 and hg38 are available in the "Resources" folder
 params.TE 		      = 	"Alu" // SHOULD DISAPEAR TO ALLOW ALL TE AT THE SAME TIME
 params.outdir	      = 	"TypeREF-${date}"
 params.help		      =	  null
@@ -54,7 +54,7 @@ if (params.help) {
   --bed           bed file with Reference TE breakpoints
 
   --ref           reference genome used with MELT (.fasta)
-  --RM_track      RepeatMasker track for reference MEI (.bed) note: RM track for hg19 and hg38 are available in the "Ressources" folder
+  --RM_track      RepeatMasker track for reference MEI (.bed) note: RM track for hg19 and hg38 are available in the "Resources" folder
   --aln_path      path to bam/cram directory (all samples need to be in the same directory however, 
                   the files to analyse will be only those in the aln_samples table)
   --aln_samples   two columns (tab delimited) with header and samples ID in column 1 and associated samples file names (.bam/.cram) in column 2. 
