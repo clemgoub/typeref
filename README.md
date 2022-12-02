@@ -1,4 +1,4 @@
-[![status](https://img.shields.io/badge/status:-v1.0-green)]() [![status: support](https://img.shields.io/badge/support:-yes-green)]()
+[![status](https://img.shields.io/badge/status:-v1.0-green)]() [![status: support](https://img.shields.io/badge/support:-yes-green)]() [![DOI](https://img.shields.io/badge/DOI:-10.1007/978--1--0716--288--3--6_4-blue)](https://link.springer.com/protocol/10.1007/978-1-0716-2883-6_4).   
 
 # TypeREF Manual
 ###### tags: `TypeREF` `Documentation`
@@ -8,6 +8,8 @@
 TypeREF is a program to genotype **"reference"** mobile elements insertions, namely **AluY**, **LINE1** and **SVA** retrotransposons present in a reference build. The workflow for Alu is identical to [TypeTE-Reference](https://github.com/clemgoub/TypeTE), however this new version has been wrapped into a [Nextflow](https://www.nextflow.io/) package and uses a container (Docker/Singularity) in order to ease its installation.
 
 The principal use of TypeREF is to correct the genotypes of reference Alu polymorphism detected by [MELT2](https://melt.igs.umaryland.edu/). We also implemented the genotyping of candidate LINE1 and SVA elements, however please consult the benchmark section before use.
+
+- :woman_teacher: A tutorial for using `TypeREF` is available [here](https://link.springer.com/protocol/10.1007/978-1-0716-2883-6_4).
 
 >For genotyping of non-reference TE insertions see [MELT2](https://melt.igs.umaryland.edu), [ERVcaller](https://academic.oup.com/bioinformatics/article/35/20/3913/5416145?login=true) or [xTEA](https://github.com/parklab/xTea). For dimorphic Endogeneous Retrovirus polymorphisms see [dimorphicERV](https://github.com/jainy/dimorphicERV).
 
